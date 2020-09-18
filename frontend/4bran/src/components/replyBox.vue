@@ -62,7 +62,7 @@ export default {
             this.image = event.target.files[0];
         },
          async getThread() {
-         await axios.get("http://localhost:3000/api/thread").then(res => {
+         await axios.get("/api/thread").then(res => {
             if (res.data.postNumber) {
                 this.threadNumber = res.data.postNumber;
             }

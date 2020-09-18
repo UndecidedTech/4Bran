@@ -48,7 +48,7 @@ export default {
         fd.append("content", this.content);
 
         console.log(fd);
-        await axios.post("http://localhost:3000/api/upload", fd)
+        await axios.post("/api/upload", fd)
           .then(res => {
             console.log(res)
             location.reload();
@@ -59,7 +59,7 @@ export default {
          document.getElementById("newThread").disabled = true;
        },
        async getThread() {
-         await axios.get("http://localhost:3000/api/thread").then(res => {
+         await axios.get("/api/thread").then(res => {
            if (res.data.image !== undefined) {
               this.disableButton();
            }

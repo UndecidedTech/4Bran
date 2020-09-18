@@ -50,10 +50,10 @@ export default {
     },
     methods: {
         async getThread() {
-         await axios.get("http://localhost:3000/api/thread").then(res => {
+         await axios.get("/api/thread").then(res => {
               this.isFetching = false;
               this.thread.image = res.data.image;
-              this.thread.image.path = `http://localhost:3000/${res.data.image.path}`;
+              this.thread.image.path = `${window.location.origin}/${res.data.image.path}`;
               this.thread.title = res.data.title;
               this.thread.replies = res.data.replies;
               this.thread.content = res.data.content;
@@ -61,7 +61,7 @@ export default {
               
               this.thread.replies.forEach(reply => {
                   if (reply.image)
-                    reply.image.path = `http://localhost:3000/${reply.image.path}`;
+                    reply.image.path = `${window.location.origin}/${reply.image.path}`;
               });
               console.log("getThread", res.data.postNumber)
             //   if (this.image.endsWith(".webm"))

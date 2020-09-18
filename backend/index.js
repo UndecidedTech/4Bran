@@ -2,7 +2,6 @@ const express = require("express");
 const fs = require("fs");
 const schedule = require("node-schedule");
 const multer = require("multer");
-const bodyParser = require("body-parser");
 const cors = require("cors");
 const sizeOf = require("image-size");
 
@@ -12,15 +11,18 @@ const port = 3000;
 // {"postNumber":"0","image":"","title":"","content":"","replies":[]}
 
 
+
 app.use(cors({
     "origin": ["http://localhost:8080"],
     "credentials": true,
     "methods": ["GET", "POST", "OPTIONS"]
 }));
 
-app.use(bodyParser.json());
+app.use(express.json());
 
 app.use("/image", express.static("image"));
+
+app.use("/", express.static("../frontend/4bran/dist"));
 
 const fileFilter = (req, file, cb) => {
     if (file.mimetype === "image/jpeg" || file.mimetype === "image/png" || file.mimetype === "video/webm"){
