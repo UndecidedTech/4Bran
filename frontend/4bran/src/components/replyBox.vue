@@ -79,7 +79,7 @@ export default {
             }
             fd.append("comment", this.comment);
             console.log("IS ANYTHING FUCKING HAPPENING", fd)
-            await axios.post("http://localhost:3000/api/reply", fd)
+            await axios.post("/api/reply", fd)
             .then(res => {
                 console.log(res)
             })
