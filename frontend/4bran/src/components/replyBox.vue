@@ -1,7 +1,7 @@
 <template>
   <div v-if="open" id="quickReply" class="extPanel reply d-none">
       <div id="qrHeader" class="drag postblock">Reply to Thread No.<span id="qrTid">{{padPostNumber(threadNumber)}}</span><img alt="X"
-              src="/images/cross.png" id="qrClose" class="extButton" @click="hide()" title="Close Window">
+              src="/image/cross.png" id="qrClose" class="extButton" @click="hide()" title="Close Window">
       </div>
           <div id="qrForm">
               <div><textarea v-model="comment" name="com" cols="48" rows="4" wrap="soft" tabindex="0" placeholder="Comment"></textarea>
