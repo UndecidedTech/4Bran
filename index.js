@@ -6,7 +6,7 @@ const cors = require("cors");
 const sizeOf = require("image-size");
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // {"postNumber":"0","image":"","title":"","content":"","replies":[]}
 
