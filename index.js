@@ -22,7 +22,7 @@ app.use(express.json());
 
 app.use("/image", express.static("image"));
 
-app.use("/", express.static("./frontend/4bran/dist"));
+app.use("/", express.static("frontend/4bran/dist"));
 
 const fileFilter = (req, file, cb) => {
     if (file.mimetype === "image/jpeg" || file.mimetype === "image/png" || file.mimetype === "video/webm"){
