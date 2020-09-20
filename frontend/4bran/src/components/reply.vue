@@ -55,7 +55,7 @@ export default {
 
             htmlOutput = htmlOutput.split("\n");
             htmlOutput.forEach((sentence) => {
-                if (sentence.startsWith(/&gt;(?!&gt;).+$/g)){
+                if (sentence.search(/&gt;(?!&gt;).+$/g)){
                     sentence = `<span class="quote">${sentence}</span>`;
                     newOutput.push(sentence);
                 } else {
