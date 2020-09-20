@@ -41,11 +41,31 @@ export default {
         },
         parseContent(comment) {
             let htmlOutput = "";
-            htmlOutput = comment.replace("\n", "<br>").replace(/>>[0-9]{7}/g, (id) => {
+            
+            htmlOutput = comment.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replace("\n", "<br>").replace(/&gt;&gt;[0-9]{7}/g, (id) => {
                 console.log(`<button class="quoteLink">${id}</button>`)
                 return `<button class="quoteLink" id="${id.substr(2)}">${id}</button>`;
+            }).replace(/\[spoiler\].*\[\/spoiler\]/g, (spoilerText) => {
+                spoilerText = spoilerText.replace("[spoiler]", "");
+                spoilerText = spoilerText.replace("[/spoiler]", "");
+                console.log(spoilerText);
+                return `<s>${spoilerText}</s>`;
             })
-            return htmlOutput;
+            let newOutput = [];
+
+            htmlOutput = htmlOutput.split("\n");
+            htmlOutput.forEach((sentence) => {
+                if (sentence.startsWith("&gt;")){
+                    sentence = `<span class="quote">${sentence}</span>`;
+                    newOutput.push(sentence);
+                } else {
+                    newOutput.push(sentence)
+                }
+            });
+
+            newOutput = newOutput.join("\n");
+        
+            return newOutput;
         },
         scrollToPost(id) {
             let element = document.getElementById(id);
@@ -157,4 +177,32 @@ export default {
     margin-top: 0;
     margin-left: 2px;
 }
+
+s, s a:not(:hover) {
+    color: #000!important;
+    background: #000!important;
+    text-decoration: none;
+}
+
+s:hover,s:focus,s:hover a {
+    color: #fff!important
+}
+
+s:hover a {
+    text-decoration: underline
+}
+
+span.spoiler {
+    color: #000!important;
+    background: #000!important
+}
+
+span.spoiler:hover,span.spoiler:focus {
+    color: #fff!important
+}
+
+.quote {
+    color: #789922;
+}
+
 </style>
