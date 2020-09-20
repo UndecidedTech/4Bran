@@ -42,7 +42,7 @@ export default {
         parseContent(comment) {
             let htmlOutput = "";
             
-            htmlOutput = comment.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replace("\n", "<br>").replace(/&gt;&gt;[0-9]{7}/g, (id) => {
+            htmlOutput = comment.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>").replaceAll(/&gt;&gt;[0-9]{7}/g, (id) => {
                 console.log(`<button class="quoteLink">${id}</button>`)
                 return `<button class="quoteLink" id="${id.substr(2)}">${id}</button>`;
             }).replace(/\[spoiler\].*\[\/spoiler\]/g, (spoilerText) => {
