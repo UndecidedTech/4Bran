@@ -1,27 +1,24 @@
 <template>
   <div id="app">
-    <originalPost/>
-    <thread/>
-    <reply-box ref="replyBox"/>
+    <navBar></navBar>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import originalPost from './components/originalPost.vue'
-import thread from './components/thread.vue'
-import replyBox from './components/replyBox.vue'
+import navBar from "./components/navBar"
 export default {
   name: 'App',
   components: {
-    originalPost,
-    thread,
-    replyBox
+    navBar
   }
 }
 </script>
 
 <style>
 #app {
+  padding-left: 5px;
+  padding-right: 5px;
   background-color: #eef2ff;
   font-family: arial, helvetica, sans-serif; font-size: 10pt;
   -webkit-font-smoothing: antialiased;

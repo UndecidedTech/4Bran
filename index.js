@@ -4,12 +4,33 @@ const schedule = require("node-schedule");
 const multer = require("multer");
 const cors = require("cors");
 const sizeOf = require("image-size");
+const rateLimit = require("express-rate-limit");
+
+
+// rate limiters
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 200
+});
+
+const postLimit = rateLimit({
+    windowMs: 1000 * 60 * 5,
+    max: 1
+})
+
+const replyLimit = rateLimit({
+    windowsMs: 1000 * 30,
+    max: 5
+})
+
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 // {"postNumber":"0","image":"","title":"","content":"","replies":[]}
 
+
+app.use(limiter);
 
 
 app.use(cors({
@@ -22,7 +43,7 @@ app.use(express.json());
 
 app.use("/image", express.static("image"));
 
-app.use("/", express.static("./frontend/4bran/dist"));
+app.use("/", express.static("./public"));
 
 const fileFilter = (req, file, cb) => {
     if (file.mimetype === "image/jpeg" || file.mimetype === "image/png" || file.mimetype === "video/webm"){
@@ -94,7 +115,7 @@ function cleanPost(thread) {
 
 app.listen(port, () => console.log(`server started on ${port}`))
 
-app.post("/api/upload", upload.single("image"), async (req, res) => {
+app.post("/api/upload", postLimit, upload.single("image"), async (req, res) => {
     console.log(req.body, "HERE");
     if (req.file !== undefined) {
         let img = sizeOf(req.file.path);
@@ -152,7 +173,7 @@ app.get("/api/thread", (req, res) => {
     }
 });
 
-app.post("/api/reply", upload.single("image"), (req, res) => {
+app.post("/api/reply", replyLimit,upload.single("image"), (req, res) => {
 
     if (req.file !== undefined) {
         let reply = {};

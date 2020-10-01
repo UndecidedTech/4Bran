@@ -8,11 +8,12 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
-    "vue": "^2.6.11"
+    "vue": "^2.6.12",
+    "vue-router": "^3.4.5"
   },
   "devDependencies": {
     "@vue/cli-service": "~4.2.0",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.12"
   },
   "browserslist": [
     "> 1%",
