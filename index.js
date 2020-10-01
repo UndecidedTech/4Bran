@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const fs = require("fs");
 const schedule = require("node-schedule");
@@ -5,7 +6,15 @@ const multer = require("multer");
 const cors = require("cors");
 const sizeOf = require("image-size");
 const rateLimit = require("express-rate-limit");
+const mongoose = require("mongoose");
+const db_user = process.env.DB_USER;
+const db_pass = process.env.DB_PASS;
+const db_ip = process.env.DB_IP
+const url = `mongodb://${db_user}:${db_pass}@${db_ip}/4Bran?authSource=admin`
 
+const Board = require("./models/board");
+
+mongoose.connect(url, {useNewUrlParser:true, useUnifiedTopology: true, useFindAndModify: false});
 
 // rate limiters
 const limiter = rateLimit({
@@ -67,57 +76,38 @@ const upload = multer({
     fileFilter: fileFilter
 });
 
-let post = fs.readFileSync("post.json");
-var thread = JSON.parse(post);
+// let post = fs.readFileSync("post.json");
+// var thread = JSON.parse(post);
 
-console.log(thread)
+// console.log(thread)
 
-var refreshPost = schedule.scheduleJob("* * 12 * *", () => {
-    thread = cleanPost(thread);
-})
+// var refreshPost = schedule.scheduleJob("* * 12 * *", () => {
+//     thread = cleanPost(thread);
+// })
 
-function deleteImage(){
-    fs.readdir("./image/", (err, files) => {
-        if (err){
-            console.error("Unable to scan directory: ", err)
-        }
+// function deleteImage(){
+//     fs.readdir("./image/", (err, files) => {
+//         if (err){
+//             console.error("Unable to scan directory: ", err)
+//         }
 
-        files.forEach((file) => {
-            if (file.endsWith(".jpg")) {
-                console.log("deleting image: ", file)
-                fs.unlinkSync(`./image/${file}`);
-            } else if (file.endsWith(".webm")) {
-                console.log("deleting webm: ", file)
-                fs.unlinkSync(`./image/${file}`);
-            }
-        })
-    })
-}
-
-function cleanPost(thread) {
-    console.log("New Thread :)")
-    deleteImage();
-    thread.postNumber = 1;
-    thread.postCount = 0;
-    thread.image = "";
-    thread.title = "";
-    thread.content = "";
-    thread.replies = [];
-
-    // TODO delete the content of post.json
-    // let stringThread = JSON.stringify(thread);
-    // fs.writeFile("post.json", thread, (cb) => {
-    //     console.log(cb);
-    // })
-
-    return thread;
-}
+//         files.forEach((file) => {
+//             if (file.endsWith(".jpg")) {
+//                 console.log("deleting image: ", file)
+//                 fs.unlinkSync(`./image/${file}`);
+//             } else if (file.endsWith(".webm")) {
+//                 console.log("deleting webm: ", file)
+//                 fs.unlinkSync(`./image/${file}`);
+//             }
+//         })
+//     })
+// }
 
 app.listen(port, () => console.log(`server started on ${port}`))
 
-app.post("/api/upload", postLimit, upload.single("image"), async (req, res) => {
-    console.log(req.body, "HERE");
+app.post("/api/thread", postLimit, upload.single("image"), async (req, res) => {
     if (req.file !== undefined) {
+        let thread = {};
         let img = sizeOf(req.file.path);
         let returnValue = {
             "nWidth": img.width,
@@ -151,30 +141,33 @@ app.post("/api/upload", postLimit, upload.single("image"), async (req, res) => {
         }; 
         thread.title = req.body.title;
         thread.content = req.body.content;
-        // write thread object to our JSON file so we can keep concurrency
-        // console.log("Thread????: " , JSON.stringify(thread));
-        // let data = JSON.stringify(thread);
-        // fs.writeFile("post.json", data, (cb) => {
-        //     console.log(cb);
-        // });
-        console.log("Upload!!", thread)
+        // write to Board thread list
+        let newThread = await Board.findOneAndUpdate({"name": req.body.board}, {$push: { "threads": thread}});
+        
         res.status(200).send("Success");   
-    }
+    }      
 });
 
-app.get("/api/thread", (req, res) => {
-    console.log("triggered");
-    if (thread.image === "") {
-        console.log("HERE??>???")
-        res.status(200).json({"message": "It's your lucky day"});
-    } else {
-        console.log("Heres your thread you filthy animal", thread)
-        res.send(thread);
-    }
-});
+app.get("/api/board/:boardName", async (req, res) => {
+    let returnValue = await Board.findOne({"name": req.params.boardName});
+    
+    res.send(returnValue);
+})
+
+
+
+// app.get("/api/thread", (req, res) => {
+//     console.log("triggered");
+//     if (thread.image === "") {
+//         console.log("HERE??>???")
+//         res.status(200).json({"message": "It's your lucky day"});
+//     } else {
+//         console.log("Heres your thread you filthy animal", thread)
+//         res.send(thread);
+//     }
+// });
 
 app.post("/api/reply", replyLimit,upload.single("image"), (req, res) => {
-
     if (req.file !== undefined) {
         let reply = {};
         let img = sizeOf(req.file.path);

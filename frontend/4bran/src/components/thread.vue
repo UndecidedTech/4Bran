@@ -1,4 +1,9 @@
 <template>
+<div>
+    <div>
+        <banner/>
+    </div>
+    <hr class="abovePostLine"> 
   <div class="content">
       <div>
           <div v-if="!isFetching && thread.content !== undefined" class="opContainer">
@@ -29,8 +34,8 @@
           <div v-else>
           </div>
       </div>
-      
   </div>
+</div>
 </template>
 
 <script>
@@ -38,8 +43,12 @@ import axios from "axios";
 import { EventBus } from "../event-bus";
 import imageComponent from "../components/imageComponent";
 import replyComponent from "../components/reply";
+import banner from "../components/banner"
 export default {
     name: "thread",
+    components: {
+        banner
+    },
     data() {
         return {
             "image": undefined,

@@ -17,7 +17,8 @@ export default {
         originalPost,
         thread,
         replyBox
-    }
+    },
+    props: ["board", "threadNumber"]
 }
 </script>
 

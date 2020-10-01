@@ -6,18 +6,21 @@
   <div>
       <div id="formContainer" class="collapse">
           <div class="row mt-2 justify-content-center">
-            <label class="mr-2 thread-label" for="uploadTitle">Title</label>
+            <span class="mr-2 thread-label" for="uploadTitle">Title</span>
             <input v-model="title" class="col-5" type="text" id="uploadTitle"/>
           </div>
           <div class="row mt-2 mb-2 justify-content-center">
-            <p class="mr-2 thread-label">Description</p>
-            <textarea v-model="content" class="col-5" type="text" rows="8" id="uploadContent"/>    
+            <span class="mr-2 thread-label">Description</span>
+            <textarea v-model="content" class="col-5" type="text" rows="" id="uploadContent"/>    
           </div>
           <div class="row justify-content-center">
-            <form enctype="multipart/form-data">
-              <input class="" @change="onFileSelected" type="file" id="uploadImage"/>
-              <button class="ml-auto" type="submit" @click="onUpload">Submit</button>
-            </form>
+            <span class="mr-2 thread-label">File</span>
+            <div class="col-3">
+                <input class="" @change="onFileSelected" type="file" id="uploadImage"/>
+            </div>
+            <div class="col-2">
+                <button class="ml-auto" type="submit" @click="onUpload">Post</button>
+            </div>
           </div>
       </div>
   </div>

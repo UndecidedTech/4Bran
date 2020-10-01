@@ -17,6 +17,7 @@ export default {
 
 <style>
 #app {
+  display: block;
   padding-left: 5px;
   padding-right: 5px;
   background-color: #eef2ff;
