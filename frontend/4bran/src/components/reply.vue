@@ -36,7 +36,7 @@ export default {
             let htmlOutput = "";
             console.log(comment);
             
-            htmlOutput = comment.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>").replaceAll(/&gt;&gt;[0-9]{7}/g, (id) => {
+            htmlOutput = comment.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>").replaceAll(/&gt;&gt;[0-9]{1,9}/g, (id) => {
                 console.log(`<button class="quoteLink">${id}</button>`)
                 return `<button class="quoteLink" id="${id.substr(2)}">${id}</button>`;
             }).replace(/\[spoiler\].*\[\/spoiler\]/g, (spoilerText) => {
@@ -47,13 +47,15 @@ export default {
             })
             let newOutput = [];
 
-            htmlOutput = htmlOutput.split("\n");
+            htmlOutput = htmlOutput.split("<br>");
             htmlOutput.forEach((sentence) => {
-                if (sentence.search(/&gt;(?!&gt;).+$/g)){
-                    sentence = `<span class="quote">${sentence}</span>`;
+                console.log(sentence);
+                console.log("Split?", sentence.split("&gt;"));
+                if (sentence.split("&gt;").length === 2 && sentence.startsWith("&gt;")){
+                    sentence = `<span class="quote">${sentence}</span><br>`;
                     newOutput.push(sentence);
                 } else {
-                    newOutput.push(sentence)
+                    newOutput.push(`${sentence}<br>`)
                 }
             });
 
