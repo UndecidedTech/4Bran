@@ -12,6 +12,9 @@ const db_pass = process.env.DB_PASS;
 const db_ip = process.env.DB_IP
 const url = `mongodb://${db_user}:${db_pass}@${db_ip}/4Bran?authSource=admin`
 
+// is this the best way to do it?
+let postCount = 1;
+
 const Board = require("./models/board");
 
 mongoose.connect(url, {useNewUrlParser:true, useUnifiedTopology: true, useFindAndModify: false});
@@ -109,6 +112,7 @@ app.post("/api/thread", postLimit, upload.single("image"), async (req, res) => {
             "kbSize": Math.ceil(req.file.size / 1000),
             "expanded": false
         }; 
+        thread.postNumber = postCount++;
         thread.title = req.body.title;
         thread.content = req.body.content;
         // write to Board thread list
@@ -148,6 +152,7 @@ app.post("/api/thread/reply", replyLimit,upload.single("image"), async (req, res
     let board = req.body.board;
     let comment = req.body.comment;
     let threadNumber = req.body.threadNumber;
+    let postNumber = postCount++
 
     if (req.file !== undefined) {
         let reply = {};
@@ -184,7 +189,7 @@ app.post("/api/thread/reply", replyLimit,upload.single("image"), async (req, res
         };
         reply.comment = req.body.comment;
         //temp placeholder
-        reply.postNumber = Math.ceil(Math.random() * 10000)
+        reply.postNumber = postNumber
         //write to DB document
         let replyUpdate = await Board.findOneAndUpdate({"name": board, "threads.postNumber": threadNumber}, {$push: {"threads.$.replies": reply}}, {new: true});
         res.status(200).send(replyUpdate);   
@@ -192,7 +197,7 @@ app.post("/api/thread/reply", replyLimit,upload.single("image"), async (req, res
         let reply = {};
         reply.image = undefined;
         reply.comment = comment;
-        reply.postNumber = Math.ceil(Math.random() * 10000)
+        reply.postNumber = postNumber;
 
         console.log(reply);
 
