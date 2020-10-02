@@ -138,8 +138,6 @@ export default {
     margin: auto;
     z-index: 2;
     box-shadow: 0 0 5px rgba(0,0,0,.25);
-    min-height: 50px;
-    min-width: 50px;
 }
 
 .teaser {
@@ -149,11 +147,6 @@ export default {
 .threadList {
     padding: 20px 0;
     text-align: center;
-}
-
-.extended-small .thread {
-    width: 180px;
-    max-height: 320px;
 }
 
 .thread {
