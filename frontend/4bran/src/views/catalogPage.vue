@@ -32,10 +32,10 @@
       </div>
       <hr class="belowPostLine">
     </div>
-    <div class="content">
+    <div class="center">
     <div class="threadsList extended-small">
       <div class="thread" v-for="(thread, index) in threadList" :key="index">
-          <img class="thumb" :width="thread.image.size.width" :height="thread.image.size.height" :src="thread.image.path"/>
+          <img class="thumb" :width="thread.image.size.width" :height="thread.image.size.height" :src="thread.image.path" @click="enterThread(board, thread.postNumber)"/>
           <div class="meta">R: <b>0</b> / I: <b>0</b></div>
           <div class="teaser">
               <b>{{thread.title}}</b>: {{thread.content}}
@@ -68,7 +68,15 @@ export default {
             "threadList": []
         }
     },
+    watch: {
+        board(){
+            this.loadBoard()
+        }
+    },
     methods: {
+        enterThread(board, threadNumber) {
+            this.$router.push({path: `/${board}/thread/${threadNumber}`, params: {params: {board, threadNumber}}})
+        },
         openThread() {
             this.threadPrompt = true;
         },
@@ -91,6 +99,7 @@ export default {
           })
        },
        async loadBoard() {
+           console.log("triggerd");
         //    this.threadList = await axios.get(`/api/board/${this.board}`).data
         let res = await axios.get(`/api/board/${this.board}`);
 
@@ -114,7 +123,7 @@ export default {
 </script>
 
 <style>
-.content {
+.center {
     text-align: center;
 }
 .meta {
@@ -125,6 +134,7 @@ export default {
     margin-bottom: 1px;
 }
 .thumb {
+    cursor: pointer;
     margin: auto;
     z-index: 2;
     box-shadow: 0 0 5px rgba(0,0,0,.25);

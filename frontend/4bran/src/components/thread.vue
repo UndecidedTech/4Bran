@@ -1,12 +1,8 @@
 <template>
 <div>
-    <div>
-        <banner/>
-    </div>
-    <hr class="abovePostLine"> 
   <div class="content">
       <div>
-          <div v-if="!isFetching && thread.content !== undefined" class="opContainer">
+          <div v-if="thread.content !== undefined" class="opContainer">
             <div class="titleContainer">
                 <div class="threadTitle subject">
                     {{thread.title}}
@@ -43,52 +39,30 @@ import axios from "axios";
 import { EventBus } from "../event-bus";
 import imageComponent from "../components/imageComponent";
 import replyComponent from "../components/reply";
-import banner from "../components/banner"
 export default {
-    name: "thread",
-    components: {
-        banner
-    },
+    name: "threadComponent",
+    props: ["threadNumber", "board"],
     data() {
         return {
             "image": undefined,
             "isFetching": true,
-            "thread": {},
             "webm": false,
+            "thread": {}
         }
     },
     methods: {
         async getThread() {
-         await axios.get("/api/thread").then(res => {
-              this.isFetching = false;
-              this.thread.image = res.data.image;
-              this.thread.image.path = `${window.location.origin}/${res.data.image.path}`;
-              this.thread.title = res.data.title;
-              this.thread.replies = res.data.replies;
-              this.thread.content = res.data.content;
-              this.thread.postNumber = this.padPostNumber(res.data.postNumber);
-              
-              this.thread.replies.forEach(reply => {
-                  if (reply.image)
-                    reply.image.path = `${window.location.origin}/${reply.image.path}`;
-              });
-              console.log("getThread", res.data.postNumber)
-            //   if (this.image.endsWith(".webm"))
-            //     this.webm = true;
-
-            //   this.image = this.getImageSize();
-         })
-        },
-        getImageType(image) {
-            console.log("Here With the Image bud");
-            return true;
-        },
-        padPostNumber(resNumber) {
-            let padAmount = 8 - resNumber.toString().length;
-            console.log("padding: ", resNumber.toString.length, padAmount);
-            let paddedPost = resNumber.toString();
-            paddedPost = paddedPost.padStart(padAmount, "0")
-            return paddedPost;
+            console.log("HAHAHA", this.board, this.threadNumber) 
+            let res = await axios.get("/api/thread", {
+                params: {
+                    "threadNumber": this.threadNumber,
+                    "board": this.board
+                }
+            });
+            if (res.status === 200){
+                this.thread = res.data;
+                console.log(this.thread)
+            }
         },
         emitGlobalClickEvent() {
             EventBus.$emit("thread-number-clicked", this.thread.postNumber);

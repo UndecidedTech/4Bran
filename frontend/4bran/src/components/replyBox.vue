@@ -1,7 +1,7 @@
 <template>
   <div v-if="open" id="quickReply" class="extPanel reply d-none">
-      <div id="qrHeader" class="drag postblock">Reply to Thread No.<span id="qrTid">{{padPostNumber(threadNumber)}}</span><img alt="X"
-              src="/image/cross.png" id="qrClose" class="extButton" @click="hide()" title="Close Window">
+      <div id="qrHeader" class="drag postblock">Reply to Thread No.<span id="qrTid">{{threadNumber}}</span><img alt="X"
+              src="http://localhost:3000/image/cross.png" id="qrClose" class="extButton" @click="hide()" title="Close Window">
       </div>
           <div id="qrForm">
               <div><textarea v-model="comment" name="com" cols="48" rows="4" wrap="soft" tabindex="0" placeholder="Comment"></textarea>
@@ -23,18 +23,26 @@ import { EventBus } from "./../event-bus";
 
 export default {
     name: "replyBox",
+    props: ["threadNumber", "board"],
     data() {
       return {
         "image": undefined,
         "comment": "",
         "open": true,
-        "threadNumber": 0
         }
     },    
     methods: {
         makeDraggable() {
             const replyDiv = $("#quickReply");
             replyDiv.draggable();
+        },
+        toggleVisibility(){
+            const replyDiv = $("#quickReply");
+
+            if (replyDiv.hasClass("d-none"))
+                replyDiv.removeClass("d-none");
+            else
+                replyDiv.addClass("d-none")
         },
         makeVisible() {
             const replyDiv = $("#quickReply");
@@ -43,6 +51,7 @@ export default {
                 replyDiv.removeClass("d-none");          
         },
         hide() {
+            this.comment = "";
             const replyDiv = $("#quickReply");
             if (!replyDiv.hasClass("d-none"))
                 replyDiv.addClass("d-none")
@@ -50,48 +59,32 @@ export default {
         addComment(id) {
             this.comment = this.comment.concat(`>>${id} \n`);
         },
-        padPostNumber(resNumber) {
-            let padAmount = 8 - resNumber.toString().length;
-            console.log("padding: ", resNumber.toString.length, padAmount);
-            let paddedPost = resNumber.toString();
-            paddedPost = paddedPost.padStart(padAmount, "0")
-            return paddedPost;
-        },
         onFileSelected(event) {
             console.log(event.target.files[0]);
             this.image = event.target.files[0];
         },
-         async getThread() {
-         await axios.get("/api/thread").then(res => {
-            if (res.data.postNumber) {
-                this.threadNumber = res.data.postNumber;
-            }
-            if (res.data.image !== undefined) {
-              this.makeVisible();
-            }
-           
-         })
-       },
        async sendReply() {
             const fd = new FormData();
             if (this.image !== undefined) {
                 fd.append("image", this.image, this.image.name);
             }
             fd.append("comment", this.comment);
-            console.log("IS ANYTHING FUCKING HAPPENING", fd)
-            await axios.post("/api/reply", fd)
-            .then(res => {
-                console.log(res)
-            })
+            fd.append("board", this.board)
+            fd.append("threadNumber", this.threadNumber)
+            let res = await axios.post("/api/thread/reply", fd)
+            if (res.status === 200) {
+                window.location.reload();
+            }
        }
     },
     mounted() {
         this.makeDraggable();
-        this.getThread();
-
+        // this.getThread();
+        console.log("board", this.board)
         EventBus.$on("thread-number-clicked", (thread) => {
             this.makeVisible();
-            this.addComment(thread);
+            if (thread !== undefined)
+                this.addComment(thread);
         })
     }
 }
@@ -119,5 +112,6 @@ export default {
 
 .extButton {
     cursor: pointer;
+    margin-left: 53%;
 }
 </style>

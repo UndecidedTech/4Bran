@@ -10,7 +10,7 @@ const replySchema = new Schema({
         "required": true,
         "type": mongoose.SchemaTypes.Mixed 
     },
-    "content": {
+    "comment": {
         "required": true,
         "type": String
     },

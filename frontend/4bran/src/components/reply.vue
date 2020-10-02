@@ -1,13 +1,13 @@
 <template>
     <div>
       <div class="sideArrows">>></div>
-        <div class="reply post" :id="padPostNumber(replyData.postNumber)">
+        <div class="reply post" :id="replyData.postNumber">
             <div class="postInfo">
                 <span class="anonymous">
                     Anonymous
                 </span>
                 <span v-if="replyData.image !== undefined">File: <a :href="replyData.image.path">Image URL ({{ replyData.image.size.nWidth }}x{{replyData.image.size.nHeight}})</a> </span>
-                <span class="postNumber ml-2" @click="emitGlobalClickEvent(replyData.postNumber)">No.{{ padPostNumber(replyData.postNumber) }}</span>
+                <span class="postNumber ml-2" @click="emitGlobalClickEvent(replyData.postNumber)">No.{{replyData.postNumber}}</span>
             </div>
             <!-- <img v-if="reply.image !== undefined" v-bind:src="`http://localhost:3000/${reply.image.path}`"/> -->
             <div class="postMessage">
@@ -29,18 +29,12 @@ export default {
         imageComponent
     },
     methods: {
-        padPostNumber(resNumber) {
-            let padAmount = 8 - resNumber.toString().length;
-            console.log("padding: ", resNumber.toString.length, padAmount);
-            let paddedPost = resNumber.toString();
-            paddedPost = paddedPost.padStart(padAmount, "0")
-            return paddedPost;
-        },
         emitGlobalClickEvent() {
-            EventBus.$emit("thread-number-clicked", this.padPostNumber(this.replyData.postNumber));
+            EventBus.$emit("thread-number-clicked", this.replyData.postNumber);
         },
         parseContent(comment) {
             let htmlOutput = "";
+            console.log(comment);
             
             htmlOutput = comment.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>").replaceAll(/&gt;&gt;[0-9]{7}/g, (id) => {
                 console.log(`<button class="quoteLink">${id}</button>`)

@@ -7,7 +7,7 @@ Vue.use(VueRouter);
 
 const routes = [
     { path: "/:board/catalog", component: catalogPage, name: "catalogPage", props: true},
-    { path: "/:board/thread/:threadId", component: threadPage, name: "threadPage", props: true}
+    { path: "/:board/thread/:threadNumber", component: threadPage, name: "threadPage", props: true}
 ];
 
 const router = new VueRouter({

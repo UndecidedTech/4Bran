@@ -155,19 +155,30 @@ app.get("/api/board/:boardName", async (req, res) => {
 })
 
 
+app.get("/api/thread/", async (req, res) => {
+    let threadNumber = Number(req.query.threadNumber);
+    let board = req.query.board;
+    
+    console.log("WHATS HAPPENING", req.query);
 
-// app.get("/api/thread", (req, res) => {
-//     console.log("triggered");
-//     if (thread.image === "") {
-//         console.log("HERE??>???")
-//         res.status(200).json({"message": "It's your lucky day"});
-//     } else {
-//         console.log("Heres your thread you filthy animal", thread)
-//         res.send(thread);
-//     }
-// });
+    let threadReturn = await Board.findOne({"name": board})
+        .where("threads.postNumber").equals(threadNumber)
+        .lean();
 
-app.post("/api/reply", replyLimit,upload.single("image"), (req, res) => {
+    let returnValue = threadReturn.threads.find(thread => {
+        if (thread.postNumber === threadNumber) {
+            return thread
+        }
+    })
+
+    res.send(returnValue);
+});
+
+app.post("/api/thread/reply", replyLimit,upload.single("image"), async (req, res) => {
+    let board = req.body.board;
+    let comment = req.body.comment;
+    let threadNumber = req.body.threadNumber;
+
     if (req.file !== undefined) {
         let reply = {};
         let img = sizeOf(req.file.path);
@@ -200,32 +211,23 @@ app.post("/api/reply", replyLimit,upload.single("image"), (req, res) => {
             "size": returnValue,
             "kbSize": Math.ceil(req.file.size / 1000),
             "expanded": false
-        };  
+        };
         reply.comment = req.body.comment;
-        thread.postCount++;
-        reply.postNumber = thread.postNumber + thread.postCount;
-        // write thread object to our JSON file so we can keep concurrency
-        // console.log("Thread????: " , JSON.stringify(thread));
-        // let data = JSON.stringify(thread);
-        // fs.writeFile("post.json", data, (cb) => {
-        //     console.log(cb);
-        // });
-
-        thread.replies.push(reply);
-
-        console.log("Replied!! (You)", thread)
-        res.status(200).send("Success", thread);   
+        //temp placeholder
+        reply.postNumber = Math.ceil(Math.random() * 10000)
+        //write to DB document
+        let replyUpdate = await Board.findOneAndUpdate({"name": board, "threads.postNumber": threadNumber}, {$push: {"threads.$.replies": reply}}, {new: true});
+        res.status(200).send(replyUpdate);   
     } else if (req.file === undefined) {
         let reply = {};
         reply.image = undefined;
-        reply.comment = req.body.comment;
-        thread.postCount++;
-        reply.postNumber = thread.postNumber + thread.postCount;
+        reply.comment = comment;
+        reply.postNumber = Math.ceil(Math.random() * 10000)
 
-        thread.replies.push(reply);
+        console.log(reply);
 
-        console.log("tfw no face: ", thread);
-        res.send("Success", thread)
+        let replyUpdate = await Board.findOneAndUpdate({"name": board, "threads.postNumber": threadNumber}, {$push: {"threads.$.replies": reply}}, {new: true});
+        res.send(replyUpdate)
     }
 })
 
