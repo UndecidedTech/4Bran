@@ -32,15 +32,12 @@ const replyLimit = rateLimit({
     max: 5
 })
 
-
 const app = express();
 const port = process.env.PORT || 3000;
 
 // {"postNumber":"0","image":"","title":"","content":"","replies":[]}
 
-
 app.use(limiter);
-
 
 app.use(cors({
     "origin": ["http://localhost:8080"],
@@ -75,33 +72,6 @@ const upload = multer({
     storage: storage,
     fileFilter: fileFilter
 });
-
-// let post = fs.readFileSync("post.json");
-// var thread = JSON.parse(post);
-
-// console.log(thread)
-
-// var refreshPost = schedule.scheduleJob("* * 12 * *", () => {
-//     thread = cleanPost(thread);
-// })
-
-// function deleteImage(){
-//     fs.readdir("./image/", (err, files) => {
-//         if (err){
-//             console.error("Unable to scan directory: ", err)
-//         }
-
-//         files.forEach((file) => {
-//             if (file.endsWith(".jpg")) {
-//                 console.log("deleting image: ", file)
-//                 fs.unlinkSync(`./image/${file}`);
-//             } else if (file.endsWith(".webm")) {
-//                 console.log("deleting webm: ", file)
-//                 fs.unlinkSync(`./image/${file}`);
-//             }
-//         })
-//     })
-// }
 
 app.listen(port, () => console.log(`server started on ${port}`))
 
