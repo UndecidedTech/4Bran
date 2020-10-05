@@ -21,6 +21,10 @@ const replySchema = new Schema({
     "date": {
         "type": Date,
         "default": Date.now
+    },
+    "ip": {
+        "type": String,
+        "required": true
     }
 }) 
 
@@ -46,7 +50,11 @@ const threadSchema = new Schema({
         "required": true,
         "type": Number
     },
-    "replies": [replySchema]
+    "replies": [replySchema],
+    "ip": {
+        "type": String,
+        "required": true
+    }
 })
 
 const boardSchema = new Schema({

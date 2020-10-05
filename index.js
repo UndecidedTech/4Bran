@@ -148,7 +148,14 @@ app.post("/api/thread", postLimit, upload.single("image"), async (req, res) => {
 
 app.get("/api/board/:boardName", async (req, res) => {
     let returnValue = await Board.findOne({"name": req.params.boardName});
-    
+    console.log(req.connection.remoteAddress, console.log(req.ip));
+
+    if (req.connection.remoteAddress) {
+        let ip = req.connection.remoteAddress.substr(7);
+        returnValue.ip = ip;
+        console.log(ip)
+    }
+
     res.send(returnValue);
 })
 
@@ -168,6 +175,12 @@ app.get("/api/thread/", async (req, res) => {
             return thread
         }
     })
+    
+    if (req.connection.remoteAddress) {
+        let ip = req.connection.remoteAddress.substr(7);
+        returnValue.ip = ip;
+        console.log(ip)
+    }
 
     res.send(returnValue);
 });
@@ -177,6 +190,8 @@ app.post("/api/thread/reply", replyLimit,upload.single("image"), async (req, res
     let comment = req.body.comment;
     let threadNumber = req.body.threadNumber;
     let postNumber = writePostNumber()
+
+    let ip = req.connection.remoteAddress.substr(7)
 
     if (req.file !== undefined) {
         let reply = {};
@@ -205,6 +220,8 @@ app.post("/api/thread/reply", replyLimit,upload.single("image"), async (req, res
             returnValue.width = returnValue.pWidth;
         }
 
+        reply.ip = ip;
+
         reply.image = {
             "path": req.file.path,
             "size": returnValue,
@@ -222,6 +239,7 @@ app.post("/api/thread/reply", replyLimit,upload.single("image"), async (req, res
         reply.image = undefined;
         reply.comment = comment;
         reply.postNumber = postNumber;
+        reply.ip = ip;
 
         console.log(reply);
 
@@ -236,6 +254,7 @@ app.get("/api/banner", async (req, res) => {
     let boards = ["a"];
     let randomBoard = boards[Math.floor(Math.random() * boards.length)];
 
+    // change this to filter out boards from the requested Board
     let bannerList = await Banner.find()
         .where("board").equals(randomBoard);
 
