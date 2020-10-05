@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class>
       <div>
           <banner/>
           <div class="boardTitle">
@@ -12,6 +12,18 @@
           <span class="startThread" @click="emitGlobalClickEvent()">Post a Reply</span>
         ]
       </div>
+      <hr class="aboveMidAd">
+
+     <boardbanner/>    
+    
+      <hr class="belowPostLine">
+
+    <div class="navLinks"> 
+        nav links will go here
+    </div>
+
+
+
       <threadComponent v-bind:threadNumber="threadNumber" v-bind:board="board"/>
       <reply-box v-bind:threadNumber="thread.postNumber" v-bind:board="board" ref="replyBox"/>
   </div>
@@ -22,6 +34,7 @@ import axios from "axios"
 import { EventBus } from "../event-bus";
 
 import banner from "../components/banner";
+import boardbanner from "../components/boardbanner";
 
 import originalPost from '../components/originalPost'
 import threadComponent from '../components/thread.vue'
@@ -32,7 +45,8 @@ export default {
     components: {
         threadComponent,
         replyBox,
-        banner
+        banner,
+        boardbanner
     },
     data() {
         return {
@@ -87,8 +101,16 @@ hr {
     width: 90%;
 }
 
+.aboveMidAd {
+    width: 468px;
+}
+
 .belowPostLine {
     width: 99%;
+}
+
+.navLinks {
+
 }
 
 .togglePostFormLink {

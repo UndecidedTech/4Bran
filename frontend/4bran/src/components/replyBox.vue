@@ -112,6 +112,6 @@ export default {
 
 .extButton {
     cursor: pointer;
-    margin-left: 53%;
+    margin-left: 50%;
 }
 </style>

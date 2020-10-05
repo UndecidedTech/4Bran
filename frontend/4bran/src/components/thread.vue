@@ -17,8 +17,8 @@
             </div>
             </div>
             <div class="imageContainer">
-                <imageComponent v-bind:image="thread.image"/>
-                <!-- <video v-else v-bind:width="image.width" v-bind:height="image.height" v-bind:src="thread.image"/> -->
+                <imageComponent v-if="!thread.image.webm" v-bind:image="thread.image"/>
+                <video v-else v-bind:width="image.width" v-bind:height="image.height" v-bind:src="thread.image"/>
             </div>
             <div class="threadContent postMessage">
                 {{thread.content}}
@@ -46,7 +46,6 @@ export default {
         return {
             "image": undefined,
             "isFetching": true,
-            "webm": false,
             "thread": {}
         }
     },
@@ -61,7 +60,23 @@ export default {
             });
             if (res.status === 200){
                 this.thread = res.data;
-                console.log(this.thread)
+                console.log("ORIGIN: ", window.location.origin);
+                console.log("THREAD OBJECT: ", this.thread)
+
+                if (window.location.origin === "http://localhost:8080")
+                    this.thread.image.path = `http://localhost:3000/${this.thread.image.path}`;
+                else
+                    this.thread.image.path = `${window.location.origin}/${this.thread.image.path}`;
+
+            
+                this.thread.replies.map((reply) => {
+                    if (reply.image) {
+                        if (window.location.origin === "http://localhost:8080")
+                            reply.image.path = `http://localhost:3000/${reply.image.path}`
+                        else
+                            reply.image.path = `${window.location.origin}/${reply.image.path}`
+                    }
+                })
             }
         },
         emitGlobalClickEvent() {

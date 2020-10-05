@@ -27,3 +27,7 @@
 15. PadPostNumber function doesn't work with double digit Id's
 
 16. breakup the comment into each new line, and if it starts with ">" then I will greentext.
+
+17. Proper Error Messages
+
+18. 404/Bump threads when 40 is reached

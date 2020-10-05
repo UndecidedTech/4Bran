@@ -18,7 +18,7 @@
           </div>
           <div class="row mt-2 mb-2 justify-content-center">
             <span class="mr-2 thread-label">Description</span>
-            <textarea v-model="content" class="col-5" type="text" rows="8" cols="48" wrap="soft" tabindex="4"/>    
+            <textarea v-model="content" class="col-5" type="text" rows="8" cols="48" wrap="soft"/>    
           </div>
           <div class="row justify-content-center">
             <span class="mr-2 thread-label">File</span>
@@ -35,7 +35,9 @@
     <div class="center">
     <div class="threadsList extended-small">
       <div class="thread" v-for="(thread, index) in threadList" :key="index">
-          <img class="thumb" :width="thread.image.size.width" :height="thread.image.size.height" :src="thread.image.path" @click="enterThread(board, thread.postNumber)"/>
+          <router-link :to="{path: `/${board}/thread/${thread.postNumber}`}">
+            <img class="thumb" :width="thread.image.size.cWidth" :height="thread.image.size.cHeight" :src="thread.image.path"/>
+          </router-link>
           <div class="meta">R: <b>0</b> / I: <b>0</b></div>
           <div class="teaser">
               <b>{{thread.title}}</b>: {{thread.content}}
@@ -130,7 +132,7 @@ export default {
     cursor: help;
     font-size: 11px;
     line-height: 8px;
-    margin-top: 2px;
+    margin-top: 5px;
     margin-bottom: 1px;
 }
 .thumb {
@@ -142,6 +144,8 @@ export default {
 
 .teaser {
     padding: 0 15px;
+    line-height: normal;
+
 }
 
 .threadList {
@@ -158,6 +162,8 @@ export default {
     margin-bottom: 20px;
     padding: 5px 0 3px;
     position: relative;
+    width: 180px;
+    max-height: 328px;
 }
 
 .thread-label {

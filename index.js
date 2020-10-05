@@ -13,9 +13,23 @@ const db_ip = process.env.DB_IP
 const url = `mongodb://${db_user}:${db_pass}@${db_ip}/4Bran?authSource=admin`
 
 // is this the best way to do it?
-let postCount = 1;
+
+let JSONthread = fs.readFileSync("post.json");
+
+
+let storedThread = JSON.parse(JSONthread);
+
+
+function writePostNumber() {
+    storedThread.postNumber++
+    fs.writeFileSync("post.json", JSON.stringify(storedThread))
+    return storedThread.postNumber
+}
+
 
 const Board = require("./models/board");
+const Banner =  require("./models/banner")
+
 
 mongoose.connect(url, {useNewUrlParser:true, useUnifiedTopology: true, useFindAndModify: false});
 
@@ -24,10 +38,10 @@ const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 200
 });
-
+//change postlimit back
 const postLimit = rateLimit({
     windowMs: 1000 * 60 * 5,
-    max: 1
+    max: 100
 })
 
 const replyLimit = rateLimit({
@@ -55,7 +69,7 @@ app.use("/image", express.static("image"));
 app.use("/", express.static("./public"));
 
 const fileFilter = (req, file, cb) => {
-    if (file.mimetype === "image/jpeg" || file.mimetype === "image/png" || file.mimetype === "video/webm"){
+    if (file.mimetype === "image/jpeg" || file.mimetype === "image/png" || file.mimetype === "video/webm" || file.mimetype === "image/jpeg"){
         cb(null, true)
     } else {
         cb(null, false)
@@ -89,19 +103,29 @@ app.post("/api/thread", postLimit, upload.single("image"), async (req, res) => {
 
         if (img.width > img.height) {
             let pWidth = 250;
+            let cWidth = 150;
             let percentChange = ((pWidth - img.width) / Math.abs(img.width));
+            let catalogChange = ((cWidth - img.width) / Math.abs(img.width));
                
-            returnValue.pWidth = pWidth;
+            returnValue.pWidth = 250;
+            returnValue.cWidth = 150;
+            returnValue.cHeight = img.height - Math.abs(img.height * catalogChange);
             returnValue.pHeight = img.height - Math.abs(img.height * percentChange);
                 
             returnValue.width = 250;
             returnValue.height = returnValue.pHeight;
         } else {
             let pHeight = 250;
+            let cHeight = 150;
             let percentChange = (pHeight - img.height) / Math.abs(img.height);
+            let catalogChange = (cHeight - img.height) / Math.abs(img.height);
 
             returnValue.pHeight = 250;
+            returnValue.cHeight = 150;
             returnValue.pWidth = img.width - Math.abs(img.width * percentChange);
+            returnValue.cWidth = img.width - Math.abs(img.width * catalogChange);
+
+
             returnValue.height = 250;
             returnValue.width = returnValue.pWidth;
         }
@@ -112,7 +136,7 @@ app.post("/api/thread", postLimit, upload.single("image"), async (req, res) => {
             "kbSize": Math.ceil(req.file.size / 1000),
             "expanded": false
         }; 
-        thread.postNumber = postCount++;
+        thread.postNumber = writePostNumber();
         thread.title = req.body.title;
         thread.content = req.body.content;
         // write to Board thread list
@@ -152,7 +176,7 @@ app.post("/api/thread/reply", replyLimit,upload.single("image"), async (req, res
     let board = req.body.board;
     let comment = req.body.comment;
     let threadNumber = req.body.threadNumber;
-    let postNumber = postCount++
+    let postNumber = writePostNumber()
 
     if (req.file !== undefined) {
         let reply = {};
@@ -163,21 +187,21 @@ app.post("/api/thread/reply", replyLimit,upload.single("image"), async (req, res
         };
 
         if (img.width > img.height) {
-            let pWidth = 250;
+            let pWidth = 125;
             let percentChange = ((pWidth - img.width) / Math.abs(img.width));
                
             returnValue.pWidth = pWidth;
             returnValue.pHeight = img.height - Math.abs(img.height * percentChange);
                 
-            returnValue.width = 250;
+            returnValue.width = 125;
             returnValue.height = returnValue.pHeight;
         } else {
-            let pHeight = 250;
+            let pHeight = 125;
             let percentChange = (pHeight - img.height) / Math.abs(img.height);
 
-            returnValue.pHeight = 250;
+            returnValue.pHeight = 125;
             returnValue.pWidth = img.width - Math.abs(img.width * percentChange);
-            returnValue.height = 250;
+            returnValue.height = 125;
             returnValue.width = returnValue.pWidth;
         }
 
@@ -189,7 +213,7 @@ app.post("/api/thread/reply", replyLimit,upload.single("image"), async (req, res
         };
         reply.comment = req.body.comment;
         //temp placeholder
-        reply.postNumber = postNumber
+        reply.postNumber = postNumber;
         //write to DB document
         let replyUpdate = await Board.findOneAndUpdate({"name": board, "threads.postNumber": threadNumber}, {$push: {"threads.$.replies": reply}}, {new: true});
         res.status(200).send(replyUpdate);   
@@ -206,4 +230,11 @@ app.post("/api/thread/reply", replyLimit,upload.single("image"), async (req, res
     }
 })
 
+app.get("/api/banner", async (req, res) => {
+    let boardName = req.body.boardName;
+    
+    
+    console.log(boardName);
+    
+})
 
