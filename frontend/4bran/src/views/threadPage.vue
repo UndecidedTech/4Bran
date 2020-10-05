@@ -110,7 +110,7 @@ hr {
 }
 
 .navLinks {
-
+    text-align: left;
 }
 
 .togglePostFormLink {
