@@ -231,10 +231,15 @@ app.post("/api/thread/reply", replyLimit,upload.single("image"), async (req, res
 })
 
 app.get("/api/banner", async (req, res) => {
-    let boardName = req.body.boardName;
+    let boardName = req.body.board;
     
-    
-    console.log(boardName);
-    
+    let boards = ["a"];
+    let randomBoard = boards[Math.floor(Math.random() * boards.length)];
+
+    let bannerList = await Banner.find()
+        .where("board").equals(randomBoard);
+
+    let result = bannerList[Math.floor(Math.random() * bannerList.length)];
+    res.send(result);
 })
 

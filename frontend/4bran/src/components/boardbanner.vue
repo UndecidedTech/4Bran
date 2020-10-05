@@ -1,6 +1,6 @@
 <template>
-    <div class="text-center">
-        <router-link :to="`${bannerData.board}`">
+    <div v-if="bannerData" class="text-center">
+        <router-link :to="`/${bannerData.board}/catalog`">
         <img :src="`${bannerData.path}`"/>
         </router-link>
     </div> 
@@ -10,15 +10,18 @@
 import axios from "axios"
 export default {
     name: "boardbanner",
+    props: ["boardName"],
     data() {
         return {
-            bannerData: {}
+            bannerData: undefined
         }
     },
     methods: {
         async getBanner() {
-            let res = await axios.get("/api/banner")
-
+            let res = await axios.get("/api/banner", {
+                "board": this.boardName
+            })
+            console.log(res);
             if (res.status === 200) {
                 this.bannerData = res.data;
 
@@ -29,6 +32,9 @@ export default {
                 }
             }
         }
+    },
+    created() {
+        this.getBanner();
     }
 }
 </script>
