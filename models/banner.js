@@ -7,6 +7,9 @@ const bannerSchema = new Schema({
     },
     "board": {
         "type": String
+    },
+    "number": {
+        "type": Number
     }
 })
 

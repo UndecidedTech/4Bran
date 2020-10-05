@@ -14,7 +14,7 @@
       </div>
       <hr class="aboveMidAd">
 
-     <boardbanner/>    
+     <boardbanner v-bind:boardName="board"/>    
     
       <hr class="belowPostLine">
 
