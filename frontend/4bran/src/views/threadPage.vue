@@ -17,11 +17,10 @@
      <boardbanner v-bind:boardName="board"/>    
     
       <hr class="belowPostLine">
+    
+      DESKTOP NAV LINKS WILL EVENTUALLY GO HERE
 
-    <div class="navLinks"> 
-        nav links will go here
-    </div>
-
+      <hr class="belowPostLine">
 
 
       <threadComponent v-bind:threadNumber="threadNumber" v-bind:board="board"/>
@@ -51,7 +50,7 @@ export default {
     data() {
         return {
             "boardInfo": {
-                "a": "Anime and Manga",
+                "a": "Anime & Manga",
                 "b": "Random"
             },
             thread: {}
@@ -107,10 +106,6 @@ hr {
 
 .belowPostLine {
     width: 99%;
-}
-
-.navLinks {
-    text-align: left;
 }
 
 .togglePostFormLink {

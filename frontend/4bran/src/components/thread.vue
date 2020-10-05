@@ -1,36 +1,42 @@
 <template>
-<div>
   <div class="content">
-      <div>
-          <div v-if="thread.content !== undefined" class="opContainer">
             <div class="titleContainer">
-                <div class="threadTitle subject">
-                    {{thread.title}}
-                </div>    
-                <div class="threadTitle">File: <a v-bind:href="thread.image.path">Image URL ({{ thread.image.size.nWidth }}x{{thread.image.size.nHeight}})</a>
-                <div class="threadTitle anonymous">
-                    Anonymous
-                </div>
-                <button class="threadTitle postNumber ml-2" @click="emitGlobalClickEvent()"> 
-                    No. {{thread.postNumber}}
-                </button>
+                 <div class="threadTitle">File: <a v-bind:href="thread.image.path"> Image URL ({{ thread.image.size.nWidth }}x{{thread.image.size.nHeight}})</a>
             </div>
-            </div>
+
+            </div>    
             <div class="imageContainer">
                 <imageComponent v-if="!thread.image.webm" v-bind:image="thread.image"/>
                 <video v-else v-bind:width="image.width" v-bind:height="image.height" v-bind:src="thread.image"/>
             </div>
+            
+           <div class="opInfo"> 
+                 <span class="threadTitle subject">
+                    {{thread.title}}
+                 </span>
+
+                <span class="threadTitle anonymous">
+                    Anonymous
+                </span>
+                <button class="threadTitle postNumber ml-2" @click="emitGlobalClickEvent()"> 
+                    No. {{thread.postNumber}}
+                </button>
+
+                </div>
+
+
+
+
+
+
+
+
             <div class="threadContent postMessage">
                 {{thread.content}}
             </div>
             <div  v-for="(reply, index) in thread.replies" :key="index" class="threadReplies">
                 <replyComponent :replyData="reply"/>
             </div>
-            </div>
-          <div v-else>
-          </div>
-      </div>
-  </div>
 </div>
 </template>
 
@@ -99,11 +105,7 @@ export default {
 </script>
 
 <style>
-.opContainer  {
-    padding: 5px;
-    display: inline;
-    overflow: hidden;
-}
+
 
 .post {
     margin: 4px 0;
@@ -112,30 +114,36 @@ export default {
 
 
 .threadContent {
-    font-size: 12pt;
     text-align:start;
     display: inline;
-    overflow: hidden;
     margin-block-start: 1em;
     margin-block-end: 1em;
-    margin-inline-start: 20px;
-    margin-inline-end: 20px;
+    margin-inline-start: 40px;
+    margin-inline-end: 40px;
+    padding: 0px;
 }
 .imageContainer {
     float: left;
     display: block;
     margin-left: 20px;
     margin-right: 20px;
+    margin-top: 3px;
+    margin-bottom: 3px;
 
 }
+
+.opInfo {
+    display: block;
+}
+
 .titleContainer {
     display: block;
 }
 
 .threadTitle {
-    padding-left: 10px;
+    padding-left: 0px;
     text-align: start;
-    display: inline-block;
+    display: inline;
 }
 
 .post {
@@ -151,6 +159,7 @@ export default {
   background: none!important;
   border: none;
   padding: 0!important;
+  display: inline;
   /*optional*/
   /*input has OS specific font-family*/
   cursor: pointer;
