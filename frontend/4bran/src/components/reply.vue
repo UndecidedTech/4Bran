@@ -6,7 +6,8 @@
                 <span class="anonymous">
                     Anonymous
                 </span>
-                <span v-if="replyData.image !== undefined">File: <a :href="replyData.image.path">Image URL ({{ replyData.image.size.nWidth }}x{{replyData.image.size.nHeight}})</a> </span>
+                <span v-if="replyData.image !== undefined && replyData.image.type !== 'webm'">File: <a :href="replyData.image.path">Image URL ({{ replyData.image.size.nWidth }}x{{replyData.image.size.nHeight}})</a> </span>
+                <span v-else-if="replyData.image.type === 'webm'"><video controls width="250"><source width="250" height="250" type="video/webm" v-bind:src="replyData.image.path"/></video></span>
                 <span class="postNumber ml-2" @click="emitGlobalClickEvent(replyData.postNumber)">No.{{replyData.postNumber}}</span>
             </div>
             <!-- <img v-if="reply.image !== undefined" v-bind:src="`http://localhost:3000/${reply.image.path}`"/> -->

@@ -209,40 +209,54 @@ app.post("/api/thread/reply", replyLimit,upload.single("image"), async (req, res
 
     if (req.file !== undefined) {
         let reply = {};
+        
         console.log(req.file.mimetype)
-        let img = sizeOf(req.file.path);
-        let returnValue = {
-            "nWidth": img.width,
-            "nHeight": img.height
-        };
+        if (req.file.mimetype === "image/jpeg" || req.file.mimetype === "image/jpg" || req.file.mimetype === "image/png") {
 
-        if (img.width > img.height) {
-            let pWidth = 125;
-            let percentChange = ((pWidth - img.width) / Math.abs(img.width));
-               
-            returnValue.pWidth = pWidth;
-            returnValue.pHeight = img.height - Math.abs(img.height * percentChange);
-                
-            returnValue.width = 125;
-            returnValue.height = returnValue.pHeight;
-        } else {
-            let pHeight = 125;
-            let percentChange = (pHeight - img.height) / Math.abs(img.height);
+            let img = sizeOf(req.file.path);
+            let returnValue = {
+                "nWidth": img.width,
+                "nHeight": img.height
+            };
+    
+            if (img.width > img.height) {
+                let pWidth = 125;
+                let percentChange = ((pWidth - img.width) / Math.abs(img.width));
+                   
+                returnValue.pWidth = pWidth;
+                returnValue.pHeight = img.height - Math.abs(img.height * percentChange);
+                    
+                returnValue.width = 125;
+                returnValue.height = returnValue.pHeight;
+            } else {
+                let pHeight = 125;
+                let percentChange = (pHeight - img.height) / Math.abs(img.height);
+    
+                returnValue.pHeight = 125;
+                returnValue.pWidth = img.width - Math.abs(img.width * percentChange);
+                returnValue.height = 125;
+                returnValue.width = returnValue.pWidth;
+            }
 
-            returnValue.pHeight = 125;
-            returnValue.pWidth = img.width - Math.abs(img.width * percentChange);
-            returnValue.height = 125;
-            returnValue.width = returnValue.pWidth;
+
+            reply.image = {
+                "path": req.file.path,
+                "size": returnValue || undefined,
+                "kbSize": Math.ceil(req.file.size / 1000),
+                "expanded": false,
+                "type": "image"
+            };
+
         }
-
         reply.ip = await userIP(req);
 
         reply.image = {
             "path": req.file.path,
-            "size": returnValue,
             "kbSize": Math.ceil(req.file.size / 1000),
-            "expanded": false
-        };
+            "expanded": false,
+            "type": "webm"
+        }
+        
         reply.comment = req.body.comment;
         //temp placeholder
         reply.postNumber = postNumber;
