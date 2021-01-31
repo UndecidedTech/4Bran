@@ -69,6 +69,7 @@ app.use("/image", express.static("image"));
 app.use("/", express.static("./public"));
 
 const fileFilter = (req, file, cb) => {
+    console.log(file.mimetype)
     if (file.mimetype === "image/jpeg" || file.mimetype === "image/png" || file.mimetype === "video/webm" || file.mimetype === "image/jpeg"){
         cb(null, true)
     } else {
@@ -139,15 +140,30 @@ app.post("/api/thread", postLimit, upload.single("image"), async (req, res) => {
         thread.postNumber = writePostNumber();
         thread.title = req.body.title;
         thread.content = req.body.content;
+        thread.ip = await userIP(req);
+        console.log("threadIP: ",thread.ip);
+        // Check Board & of threads and remove last bump if 40
+        let board = await Board.findOne({"name": req.body.board })
+        console.log(board.threads.sort((a,b) => (a.bumpDate > b.bumpDate) ? -1 : 1))
+        if (board.threads.length >= 40) {
+            //delete last thread bumpDate
+            board.threads = await board.threads.sort((a,b) => (a.bumpDate > b.bumpDate) ? -1 : 1)
+            board.threads = board.threads.splice(0, 30)
+            await board.save();
+            console.log(board.threads);
+            
+        }
         // write to Board thread list
         let newThread = await Board.findOneAndUpdate({"name": req.body.board}, {$push: { "threads": thread}});
-        
+        // update bumpDate
+
         res.status(200).send("Success");   
     }      
 });
 
 app.get("/api/board/:boardName", async (req, res) => {
     let returnValue = await Board.findOne({"name": req.params.boardName});
+    returnValue.threads = await returnValue.threads.sort((a,b) => (a.bumpDate > b.bumpDate) ? -1 : 1)
     console.log(req.connection.remoteAddress, console.log(req.ip));
 
     if (req.connection.remoteAddress) {
@@ -191,10 +207,9 @@ app.post("/api/thread/reply", replyLimit,upload.single("image"), async (req, res
     let threadNumber = req.body.threadNumber;
     let postNumber = writePostNumber()
 
-    let ip = req.connection.remoteAddress.substr(7)
-
     if (req.file !== undefined) {
         let reply = {};
+        console.log(req.file.mimetype)
         let img = sizeOf(req.file.path);
         let returnValue = {
             "nWidth": img.width,
@@ -220,7 +235,7 @@ app.post("/api/thread/reply", replyLimit,upload.single("image"), async (req, res
             returnValue.width = returnValue.pWidth;
         }
 
-        reply.ip = ip;
+        reply.ip = await userIP(req);
 
         reply.image = {
             "path": req.file.path,
@@ -232,18 +247,18 @@ app.post("/api/thread/reply", replyLimit,upload.single("image"), async (req, res
         //temp placeholder
         reply.postNumber = postNumber;
         //write to DB document
-        let replyUpdate = await Board.findOneAndUpdate({"name": board, "threads.postNumber": threadNumber}, {$push: {"threads.$.replies": reply}}, {new: true});
+        let replyUpdate = await Board.findOneAndUpdate({"name": board, "threads.postNumber": threadNumber}, {$push: {"threads.$.replies": reply}, $set: {"threads.$.bumpDate": Date.now()}}, {new: true});
         res.status(200).send(replyUpdate);   
     } else if (req.file === undefined) {
         let reply = {};
         reply.image = undefined;
         reply.comment = comment;
         reply.postNumber = postNumber;
-        reply.ip = ip;
+        reply.ip = await userIP(req);
 
         console.log(reply);
 
-        let replyUpdate = await Board.findOneAndUpdate({"name": board, "threads.postNumber": threadNumber}, {$push: {"threads.$.replies": reply}}, {new: true});
+        let replyUpdate = await Board.findOneAndUpdate({"name": board, "threads.postNumber": threadNumber}, {$push: {"threads.$.replies": reply}, $set: {"bumpDate": Date.now()}}, {new: true});
         res.send(replyUpdate)
     }
 })
@@ -262,3 +277,12 @@ app.get("/api/banner", async (req, res) => {
     res.send(result);
 })
 
+async function userIP(req) {
+    if (req.connection.remoteAddress === "::1") {
+        let ip = "127.0.0.1"
+        return ip
+    } else {
+        let ip = req.connection.remoteAddress;
+        return ip
+    }
+}

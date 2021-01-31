@@ -46,6 +46,10 @@ const threadSchema = new Schema({
         "type": Date,
         "default": Date.now
     },
+    "bumpDate": {
+        "type": Date,
+        "default": Date.now
+    },
     "postNumber": {
         "required": true,
         "type": Number
