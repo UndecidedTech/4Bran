@@ -70,13 +70,7 @@ export default {
         }
     },
     mounted(){
-        var buttons = document.getElementsByClassName("quoteLink");
-        for (let i = 0; i < buttons.length; i++) {
-            buttons[i].addEventListener("click", () => {
-                console.log("Clicked ", this.scrollToPost(buttons[i].id));
-            })
-        }
-        
+               
     }
 }
 </script>

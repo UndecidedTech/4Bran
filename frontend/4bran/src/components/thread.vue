@@ -25,12 +25,6 @@
                 </div>
 
 
-
-
-
-
-
-
             <div class="threadContent postMessage">
                 {{thread.content}}
             </div>
