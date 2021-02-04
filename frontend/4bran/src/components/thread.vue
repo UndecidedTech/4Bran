@@ -46,12 +46,12 @@ export default {
         return {
             "image": undefined,
             "isFetching": true,
-            "thread": {}
+            "thread": {},
+            "replyTarget": undefined
         }
     },
     methods: {
         async getThread() {
-            console.log("HAHAHA", this.board, this.threadNumber) 
             let res = await axios.get("/api/thread", {
                 params: {
                     "threadNumber": this.threadNumber,
@@ -60,8 +60,6 @@ export default {
             });
             if (res.status === 200){
                 this.thread = res.data;
-                console.log("ORIGIN: ", window.location.origin);
-                console.log("THREAD OBJECT: ", this.thread)
 
                 if (window.location.origin === "http://localhost:8080")
                     this.thread.image.path = `http://localhost:3000/${this.thread.image.path}`;
@@ -82,10 +80,24 @@ export default {
         emitGlobalClickEvent() {
             EventBus.$emit("thread-number-clicked", this.thread.postNumber);
         }
+    },
+    mounted() {
+        EventBus.$on("reply-target-clicked", (id) => {
+            if (this.replyTarget !== undefined) {
+                let element = document.getElementById(this.replyTarget);
+                element.classList.remove("replyTarget");
 
-        // <video src="chrome.webm" type="video/webm">
-        //    <p>Your browser does not support the video element.</p>
-        // </video>
+                let replyDiv = document.getElementById(id);
+                this.replyTarget = id;
+                replyDiv.classList.add("replyTarget");
+                replyDiv.scrollIntoView();
+            } else {
+                let replyDiv = document.getElementById(id);
+                this.replyTarget = id;
+                replyDiv.classList.add("replyTarget");
+                replyDiv.scrollIntoView();
+            }
+        })
     },
     created() {
         this.getThread();

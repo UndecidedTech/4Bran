@@ -83,7 +83,6 @@ export default {
             this.threadPrompt = true;
         },
         onFileSelected(event) {
-        console.log(event.target.files[0]);
         this.image = event.target.files[0];
         },
         async onUpload() {
@@ -93,15 +92,12 @@ export default {
         fd.append("content", this.content);
         fd.append("board", this.board);
 
-        console.log(fd);
         await axios.post("/api/thread", fd)
           .then(res => {
-            console.log(res)
             location.reload();
           })
        },
        async loadBoard() {
-           console.log("triggerd");
         //    this.threadList = await axios.get(`/api/board/${this.board}`).data
         let res = await axios.get(`/api/board/${this.board}`);
 
@@ -113,7 +109,7 @@ export default {
                     thread.image.path = `http://localhost:3000/${thread.image.path}`;
                 else
                     thread.image.path = `${window.location.origin}/${thread.image.path}`;
-                console.log(thread.image)
+                
             })
         }
        }

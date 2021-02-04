@@ -21,7 +21,6 @@ export default {
             let res = await axios.get("/api/banner", {
                 "board": this.boardName
             })
-            console.log(res);
             if (res.status === 200) {
                 this.bannerData = res.data;
 

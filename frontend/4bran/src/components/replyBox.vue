@@ -60,7 +60,6 @@ export default {
             this.comment = this.comment.concat(`>>${id} \n`);
         },
         onFileSelected(event) {
-            console.log(event.target.files[0]);
             this.image = event.target.files[0];
         },
        async sendReply() {
@@ -80,7 +79,6 @@ export default {
     mounted() {
         this.makeDraggable();
         // this.getThread();
-        console.log("board", this.board)
         EventBus.$on("thread-number-clicked", (thread) => {
             this.makeVisible();
             if (thread !== undefined)

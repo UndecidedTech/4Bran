@@ -6,14 +6,20 @@
                 <span class="anonymous">
                     Anonymous
                 </span>
-                <span v-if="replyData.image !== undefined && replyData.image.type !== 'webm'">File: <a :href="replyData.image.path">Image URL ({{ replyData.image.size.nWidth }}x{{replyData.image.size.nHeight}})</a> </span>
-                <span v-else-if="replyData.image.type === 'webm'"><video controls width="250"><source width="250" height="250" type="video/webm" v-bind:src="replyData.image.path"/></video></span>
+                <span v-if=" replyData.image !== undefined && replyData.image.type === 'image'">File: <a :href="replyData.image.path">Image URL ({{ replyData.image.size.nWidth }}x{{replyData.image.size.nHeight}})</a></span>
+                <span v-else-if="replyData.image !== undefined && replyData.image.type === 'webm'">File: <a :href="replyData.image.path">Image URL (0x0)</a><span v-show="expanded">-[<span class="hoverTag" @click="expand()">Close</span>]</span></span>
                 <span class="postNumber ml-2" @click="emitGlobalClickEvent(replyData.postNumber)">No.{{replyData.postNumber}}</span>
             </div>
             <!-- <img v-if="reply.image !== undefined" v-bind:src="`http://localhost:3000/${reply.image.path}`"/> -->
             <div class="postMessage">
-                <imageComponent v-if="replyData.image" :image="replyData.image" class="imageMessage"/>
+                <imageComponent v-if="replyData.image !== undefined && replyData.image.type === 'image'" :image="replyData.image" class="imageMessage"/>
                 <!-- {{ parseContent(replyData.comment) }} -->
+                <span v-else-if="replyData.image !== undefined && replyData.image.type === 'webm'">
+                    <video v-if="!expanded" width="250" height="150" :src="replyData.image.path" class="imageMessage" @click="expand()"/>
+                    <video controls width="auto" v-if="expanded">
+                        <source width="auto" height="auto" type="video/webm" v-bind:src="replyData.image.path"/>
+                    </video>
+                </span>
                 <span v-html="parseContent(replyData.comment)"></span>
             </div>
         </div>
@@ -23,11 +29,17 @@
 <script>
 import { EventBus } from "./../event-bus";
 import imageComponent from "../components/imageComponent";
+import ImageComponent from './imageComponent.vue';
 export default {
     name: "replyComponent",
     props: ["replyData"],
     components: {
         imageComponent
+    },
+    data() {
+        return {
+            "expanded": false
+        }
     },
     methods: {
         emitGlobalClickEvent() {
@@ -35,23 +47,19 @@ export default {
         },
         parseContent(comment) {
             let htmlOutput = "";
-            console.log(comment);
             
             htmlOutput = comment.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>").replaceAll(/&gt;&gt;[0-9]{1,9}/g, (id) => {
-                console.log(`<button class="quoteLink">${id}</button>`)
-                return `<button class="quoteLink" id="${id.substr(2)}">${id}</button>`;
+                console.log(id.substr(8))
+                return `<button class="quoteLink" id="${id.substr(8)}">${id}</button>`;
             }).replace(/\[spoiler\].*\[\/spoiler\]/g, (spoilerText) => {
                 spoilerText = spoilerText.replace("[spoiler]", "");
                 spoilerText = spoilerText.replace("[/spoiler]", "");
-                console.log(spoilerText);
                 return `<s>${spoilerText}</s>`;
             })
             let newOutput = [];
 
             htmlOutput = htmlOutput.split("<br>");
             htmlOutput.forEach((sentence) => {
-                console.log(sentence);
-                console.log("Split?", sentence.split("&gt;"));
                 if (sentence.split("&gt;").length === 2 && sentence.startsWith("&gt;")){
                     sentence = `<span class="quote">${sentence}</span><br>`;
                     newOutput.push(sentence);
@@ -64,13 +72,28 @@ export default {
         
             return newOutput;
         },
-        scrollToPost(id) {
-            let element = document.getElementById(id);
-            element.scrollIntoView();
+        expand() {
+            if (this.expanded)
+                this.expanded = false
+            else
+                this.expanded = true
         }
     },
     mounted(){
-               
+        var buttons = document.getElementsByClassName('quoteLink');
+        for (var i in Object.keys(buttons)) {
+            buttons[i].onclick = function () {
+                console.log(this.id)
+                let id = `${this.id}`
+                console.log(id);
+
+                // let element = document.getElementById(id);
+                EventBus.$emit("reply-target-clicked", id);
+                // element.classList.add("replyTarget")
+                // element.scrollIntoView()
+
+            }
+        }
     }
 }
 </script>
@@ -194,6 +217,16 @@ span.spoiler:hover,span.spoiler:focus {
 
 .quote {
     color: #789922;
+}
+
+.hoverTag {
+    color: #34345c
+}
+
+.hoverTag:hover {
+    color: red im !important;
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 </style>

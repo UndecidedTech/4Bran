@@ -41,7 +41,6 @@ export default {
   },
   methods: {
       onFileSelected(event) {
-        console.log(event.target.files[0]);
         this.image = event.target.files[0];
       },
       async onUpload() {
@@ -50,15 +49,12 @@ export default {
         fd.append("title", this.title);
         fd.append("content", this.content);
 
-        console.log(fd);
         await axios.post("/api/upload", fd)
           .then(res => {
-            console.log(res)
             location.reload();
           })
        },
        disableButton(){
-         console.log("disabled");
          document.getElementById("newThread").disabled = true;
        },
        async getThread() {

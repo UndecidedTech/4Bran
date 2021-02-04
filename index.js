@@ -11,6 +11,7 @@ const db_user = process.env.DB_USER;
 const db_pass = process.env.DB_PASS;
 const db_ip = process.env.DB_IP
 const url = `mongodb://${db_user}:${db_pass}@${db_ip}/4Bran?authSource=admin`
+const getDimensions = require("get-video-dimensions")
 
 // is this the best way to do it?
 
@@ -70,7 +71,7 @@ app.use("/", express.static("./public"));
 
 const fileFilter = (req, file, cb) => {
     console.log(file.mimetype)
-    if (file.mimetype === "image/jpeg" || file.mimetype === "image/png" || file.mimetype === "video/webm" || file.mimetype === "image/jpeg"){
+    if (file.mimetype === "image/jpeg" || file.mimetype === "image/png" || file.mimetype === "image/gif" || file.mimetype === "video/webm" || file.mimetype === "image/jpeg"){
         cb(null, true)
     } else {
         cb(null, false)
@@ -141,7 +142,6 @@ app.post("/api/thread", postLimit, upload.single("image"), async (req, res) => {
         thread.title = req.body.title;
         thread.content = req.body.content;
         thread.ip = await userIP(req);
-        console.log("threadIP: ",thread.ip);
         // Check Board & of threads and remove last bump if 40
         let board = await Board.findOne({"name": req.body.board })
         console.log(board.threads.sort((a,b) => (a.bumpDate > b.bumpDate) ? -1 : 1))
@@ -180,8 +180,6 @@ app.get("/api/thread/", async (req, res) => {
     let threadNumber = Number(req.query.threadNumber);
     let board = req.query.board;
     
-    console.log("WHATS HAPPENING", req.query);
-
     let threadReturn = await Board.findOne({"name": board})
         .where("threads.postNumber").equals(threadNumber)
         .lean();
@@ -211,7 +209,7 @@ app.post("/api/thread/reply", replyLimit,upload.single("image"), async (req, res
         let reply = {};
         
         console.log(req.file.mimetype)
-        if (req.file.mimetype === "image/jpeg" || req.file.mimetype === "image/jpg" || req.file.mimetype === "image/png") {
+        if (req.file.mimetype === "image/jpeg" || req.file.mimetype === "image/jpg" || req.file.mimetype === "image/png" || req.file.mimetype === "image/gif") {
 
             let img = sizeOf(req.file.path);
             let returnValue = {
@@ -247,15 +245,17 @@ app.post("/api/thread/reply", replyLimit,upload.single("image"), async (req, res
                 "type": "image"
             };
 
+        } else if (req.file.mimetype === "video/webm") {
+            reply.image = {
+                "path": req.file.path,
+                "kbSize": Math.ceil(req.file.size / 1000),
+                "expanded": false,
+                "type": "webm"
+            }
         }
         reply.ip = await userIP(req);
 
-        reply.image = {
-            "path": req.file.path,
-            "kbSize": Math.ceil(req.file.size / 1000),
-            "expanded": false,
-            "type": "webm"
-        }
+        
         
         reply.comment = req.body.comment;
         //temp placeholder

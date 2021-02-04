@@ -67,11 +67,9 @@ export default {
             });
             if (res.status === 200){
                 this.thread = res.data;
-                console.log(this.thread)
             }
         },
         emitGlobalClickEvent(post) {
-            console.log("triggrd")
             EventBus.$emit("thread-number-clicked");
         }
     },
