@@ -17,7 +17,7 @@
         ]
         <span class="navTopRight">
             [
-            <a class="boards" href="#">
+            <a class="boards" href="/">
                 Home
             </a>
             ]
