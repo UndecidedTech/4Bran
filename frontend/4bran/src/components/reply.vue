@@ -50,7 +50,7 @@ export default {
             
             htmlOutput = comment.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>").replaceAll(/&gt;&gt;[0-9]{1,9}/g, (id) => {
                 console.log(id.substr(8))
-                return `<button class="quoteLink" id="${id.substr(8)}">${id}</button>`;
+                return `<a class="quoteLink" id="${id.substr(8)}">${id}</a>`;
             }).replace(/\[spoiler\].*\[\/spoiler\]/g, (spoilerText) => {
                 spoilerText = spoilerText.replace("[spoiler]", "");
                 spoilerText = spoilerText.replace("[/spoiler]", "");

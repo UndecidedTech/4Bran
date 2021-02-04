@@ -41,7 +41,7 @@ import imageComponent from "../components/imageComponent";
 import replyComponent from "../components/reply";
 export default {
     name: "threadComponent",
-    props: ["threadNumber", "board"],
+    props: ["threadNumber", "board", "postNumber"],
     data() {
         return {
             "image": undefined,
@@ -77,12 +77,7 @@ export default {
                 })
             }
         },
-        emitGlobalClickEvent() {
-            EventBus.$emit("thread-number-clicked", this.thread.postNumber);
-        }
-    },
-    mounted() {
-        EventBus.$on("reply-target-clicked", (id) => {
+        scrollToDiv(id) {
             if (this.replyTarget !== undefined) {
                 let element = document.getElementById(this.replyTarget);
                 element.classList.remove("replyTarget");
@@ -97,6 +92,20 @@ export default {
                 replyDiv.classList.add("replyTarget");
                 replyDiv.scrollIntoView();
             }
+        },
+        emitGlobalClickEvent() {
+            EventBus.$emit("thread-number-clicked", this.thread.postNumber);
+        }
+    },
+    mounted() {
+        if (this.postNumber){
+            this.$router.push({name: "threadPage", params: {"threadNumber": this.threadNumber, "board": this.board, "postNumber": id}})
+            console.log(this.postNumber)
+            this.scrollToDiv(this.postNumber)
+        }
+        EventBus.$on("reply-target-clicked", (id) => {
+            this.$router.push({name: "threadPage", params: {"threadNumber": this.threadNumber, "board": this.board, "postNumber": id}})
+            this.scrollToDiv(id);
         })
     },
     created() {
