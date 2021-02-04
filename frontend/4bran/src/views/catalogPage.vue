@@ -60,8 +60,24 @@ export default {
     data() {
         return {
             "boardInfo": {
-                "a": "Anime and Manga",
-                "b": "Random"
+                "a": "Anime & Manga",
+                "b": "Random",
+                "g": "Technology",
+                "tv": "Television & Film",
+                "v": "Video Games",
+                "vg": "Video Games Generals",
+                "k": "Weapons",
+                "o": "Auto",
+                "out": "Outdoors",
+                "sp": "Sports",
+                "lit": "Literature",
+                "mu": "Music",
+                "wsg": "Worksafe GIF",
+                "biz": "Business & Finance",
+                "fit": "Fitness",
+                "pol": "Politically Incorrect",
+                "h": "Hentai",
+                "fa": "Fashion" 
             },
             "threadPrompt": false,
             "title": "",

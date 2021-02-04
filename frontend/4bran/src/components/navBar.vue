@@ -30,15 +30,80 @@ export default {
     name: "navBar",
     data() {
         return {
-            boards: [{
-                name: "a",
-                title: "Anime and Cartoons"
-            },
-            {
-                name: "b",
-                title: "Random"
-            }]
-        }
+            boards: [
+                {
+                    "name": "a",
+                    "title": "Anime and Cartoons"
+                },
+                {
+                    "name": "b",
+                    "title": "Random"
+                },
+                {
+                    "name": "g",
+                    "title": "Technology"
+                },
+                {
+                    "name": "tv",
+                    "title": "Television and Film"
+                },
+                {
+                    "name": "v",
+                    "title": "Video Games"
+                },
+                {
+                    "name": "vg",
+                    "title": "Video Games Generals"
+                },
+                {
+                    "name": "k",
+                    "title": "Weapons"
+                },
+                {
+                    "name": "o",
+                    "title": "Auto"
+                },
+                {
+                    "name": "out",
+                    "title": "Outdoors"
+                },
+                {
+                    "name": "sp",
+                    "title": "Sports"
+                },
+                {
+                    "name": "lit",
+                    "title": "Literature"
+                },
+                {
+                    "name": "mu",
+                    "title": "Music"
+                },
+                {
+                    "name": "wsg",
+                    "title": "Worksafe GIF"
+                },
+                {
+                    "name": "biz",
+                    "title": "Business & Finance"
+                },
+                {
+                    "name": "fit",
+                    "title": "Fitness"
+                },
+                {
+                    "name": "pol",
+                    "title": "Politically Incorrect"
+                },
+                {
+                    "name": "h",
+                    "title": "Hentai"
+                },
+                {
+                    "name": "fa",
+                    "title": "Fashion"
+                }
+        ]}
     },
     methods: {
         goBoard(boardName){
