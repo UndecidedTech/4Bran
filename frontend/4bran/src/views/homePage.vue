@@ -29,12 +29,12 @@
             </h3>
             <ul>
               <li>
-                <a href="#" class="boardlink"
+                <a href="#" @click="goBoard('v')" class="boardlink"
                   >Video Games</a
                 >
               </li>
               <li>
-                <a href="#" class="boardlink"
+                <a href="#" class="boardlink" @click="goBoard('vg')"
                   >Video Game Generals</a
                 >
               </li>
@@ -46,27 +46,26 @@
             </h3>
             <ul>
               <li>
-                <a href="#" class="boardlink"
+                <a href="#" class="boardlink" @click="goBoard('g')"
                   >Technology</a
                 >
               </li>
               <li>
-                <a href="#" class="boardlink"
+                <a href="#" class="boardlink" @click="goBoard('tv')"
                   >Television &amp; Film</a
                 >
               </li>
               <li>
-                <a href="#" class="boardlink">Weapons</a>
+                <a href="#" class="boardlink" @click="goBoard('k')">Weapons</a>
               </li>
               <li>
-                <a href="#" class="boardlink">Auto</a>
-              </li>
-              
-              <li>
-                <a href="#" class="boardlink">Sports</a>
+                <a href="#" class="boardlink" @click="goBoard('o')">Auto</a>
               </li>
               <li>
-                <a href="#" class="boardlink"
+                <a href="#" class="boardlink" @click="goBoard('sp')">Sports</a>
+              </li>
+              <li>
+                <a href="#" class="boardlink" @click="goBoard('out')"
                   >Outdoors</a
                 >
               </li>
@@ -78,20 +77,20 @@
             </h3>
             <ul>
               <li>
-                <a href="#" class="boardlink"
+                <a href="#" class="boardlink" @click="goBoard('lit')"
                   >Literature</a
                 >
               </li>
               <li>
-                <a href="#" class="boardlink">Music</a>
+                <a href="#" class="boardlink" @click="goBoard('mu')">Music</a>
               </li>
               <li>
-                <a href="#" class="boardlink"
+                <a href="#" class="boardlink" @click="goBoard('fa')"
                   >Fashion</a
                 >
               </li>
               <li>
-                <a href="#" class="boardlink"
+                <a href="#" class="boardlink" @click="goBoard('wsg')"
                   >Worksafe GIF</a
                 >
               </li>
@@ -101,12 +100,12 @@
             <h3 style="text-decoration: underline; display: inline">Other</h3>
             <ul>
               <li>
-                <a href="#" class="boardlink"
+                <a href="#" class="boardlink" @click="goBoard('biz')"
                   >Business &amp; Finance</a
                 >
               </li>
               <li>
-                <a href="#" class="boardlink"
+                <a href="#" class="boardlink" @click="goBoard('fit')"
                   >Fitness</a
                 >
               </li>
@@ -122,7 +121,7 @@
                 <a href="#" @click="goBoard('b')" class="boardlink">Random</a>
               </li>
               <li>
-                <a href="#" class="boardlink"
+                <a href="#" class="boardlink" @click="goBoard('pol')"
                   >Politically Incorrect</a
                 >
               </li>
@@ -137,7 +136,7 @@
             </h3>
             <ul>
               <li>
-                <a href="//boards.4chan.org/h/" class="boardlink">Hentai</a>
+                <a href="#" class="boardlink" @click="goBoard('h')">Hentai</a>
               </li>
             </ul>
           </div>
