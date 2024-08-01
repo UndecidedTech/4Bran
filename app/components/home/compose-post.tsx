@@ -9,6 +9,7 @@ export default function ComposePost() {
   const [subject, setSubject] = useState("");
   const [comment, setComment] = useState("");
   const [blobUrl, setBlobUrl] = useState("about:blank");
+  const [fileName, setFileName] = useState("");
   const [error, setError] = useState(false);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -16,6 +17,7 @@ export default function ComposePost() {
     if (!e.target.files || e.target.files.length === 0) return;
 
     const file = e.target.files[0];
+    setFileName(file.name)
     const objectUrl = window.URL.createObjectURL(file);
     setBlobUrl(objectUrl);
   }
@@ -26,6 +28,7 @@ export default function ComposePost() {
       const formData = new FormData();
       formData.append("subject", subject);
       formData.append("comment", comment);
+      formData.append("fileName", fileName);
       
       const blobFile = await fetch(blobUrl)
       const blob = await blobFile.blob()

@@ -1,4 +1,4 @@
-import { uploadImageToS3 } from "@/api/functions";
+import { getImageMetadata, uploadImageToS3 } from "@/api/functions";
 import { prisma } from "@/api/prisma";
 import { NextApiResponse } from "next";
 import { NextResponse } from "next/server";
@@ -25,7 +25,9 @@ export async function GET(req: Request, res: NextApiResponse) {
       return NextResponse.json({ message: "Post not found" });
     }
 
-    return NextResponse.json(post);
+    const imageMetadata = await getImageMetadata(post.image);
+
+    return NextResponse.json({post, imageMetadata});
   } catch (e) {
     console.error(e);
     return NextResponse.json({ message: "Error getting thread and replies" });
