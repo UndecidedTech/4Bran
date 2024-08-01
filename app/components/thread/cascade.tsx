@@ -2,22 +2,41 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { formatDate, getImageMetadata } from "../utility/functions";
-import { useEffect } from "react";
-import Link from "next/link";
+import { formatDate } from "../utility/functions";
+import { useState } from "react";
 
 export default function Cascade() {
   const params = useParams();
+  const [ratio, setRatio] = useState(1);
+  const [width, setWidth] = useState(150);
+  const [height, setHeight] = useState(150);
+  const [enlarged, setEnlarged] = useState(false);
+
+  function handleImageClick() {
+
+    if (!thread) return;
+
+    if (!enlarged) {
+      setWidth(Number(thread.data.imageMetadata.resolution.split('x')[0]))
+      setHeight(Number(thread.data.imageMetadata.resolution.split('x')[1]))
+    } else {
+      setWidth(150)
+      setHeight(150)
+    }
+    setEnlarged(!enlarged);
+
+  }
 
   const { data: thread, isLoading, refetch } = useQuery({
     queryKey: ['thread', params.id],
     queryFn: async () => {
       const response = await axios.get(`/api/threads/${params.id}/replies`)
+      
+      setRatio(response.data.imageMetadata.resolution.split('x')[0] / 150)
+
       return response;
     },
   })
-
-  console.log(thread)
 
   return (
     <>
@@ -33,9 +52,10 @@ export default function Cascade() {
             <Image
               src={thread.data.post.image}
               alt={thread.data.post.subject}
-              width={150}
-              height={150}
-              className="pb-1"
+              width={width}
+              height={height / ratio}
+              className="pb-1 hover:cursor-pointer"
+              onClick={handleImageClick}
             />
             <div className="w-full">
               <span className="px-1 font-bold text-blue-900">{thread.data.post.subject}</span>

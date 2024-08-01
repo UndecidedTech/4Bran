@@ -15,7 +15,7 @@ export default function Thread() {
           <span>[<Link href="/" className="text-slate-600 hover:text-slate-400">Home</Link>]</span>
         </nav>
         <h1 className="text-5xl font-extrabold text-blue-500 tracking-tight sm:text-[2rem]">
-          /b/ - 4Bran
+          /b/ - Random
         </h1>
         <ComposeReply />
         <QueryClientProvider client={queryClient}>
