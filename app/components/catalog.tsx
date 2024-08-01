@@ -19,7 +19,7 @@ export default function Catalog() {
   return (
     <>
       {isLoading && <p>Loading...</p>}
-      <div className="w-full flex flex-wrap justify-start">
+      <div className="w-full flex flex-wrap justify-start gap-x-8 px-12">
         {posts && posts.map((post: any) => (
           <div className="max-w-[180px] max-h-[328px] flex flex-col items-center text-xs">
             <Link
@@ -28,7 +28,7 @@ export default function Catalog() {
               <Image src={post.image} alt={post.subject} width={150} height={150} className="pb-1"/>
             </Link>
             <p><span className="font-bold">R: {post.replies} / </span>I: {post.images}</p> 
-            <p><span className="font-bold">{post.subject}</span>: {post.comment}</p>
+            <p className="max-w-[150px] text-center line-clamp-[14]"><span className="font-bold">{post.subject}</span>: {post.comment}</p>
           </div>
         ))}
       </div>
