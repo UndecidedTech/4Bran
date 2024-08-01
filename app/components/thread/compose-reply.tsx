@@ -1,8 +1,10 @@
 "use client";
 import axios from "axios";
+import { useParams } from "next/navigation";
 import { useState } from "react"
 
 export default function ComposeReply() {
+  const params = useParams();
   const [draftMode, setDraftMode] = useState(false);
   const [comment, setComment] = useState("");
   const [blobUrl, setBlobUrl] = useState("about:blank");
@@ -30,8 +32,8 @@ export default function ComposeReply() {
         formData.append("file", new File([blob], blobUrl, { type: blob.type }));
       }
 
-      await axios.post('/api/posts', formData)
-
+      await axios.post(`/api/threads/${params.id}/replies`, formData)
+      location.reload()
     } catch (e) {
       setError(!error)
     }

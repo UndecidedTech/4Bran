@@ -10,8 +10,6 @@ export default function ComposePost() {
   const [comment, setComment] = useState("");
   const [blobUrl, setBlobUrl] = useState("about:blank");
   const [error, setError] = useState(false);
-  const [success, setSuccess] = useState(false);
-
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 
@@ -34,8 +32,6 @@ export default function ComposePost() {
       formData.append("file", new File([blob], blobUrl, { type: blob.type }));
 
       const response = await axios.post(`/api/threads`, formData)
-      console.log(response)
-      setSuccess(true)
       router.push(`/thread/${response.data.thread.id}`)
     } catch (e) {
       setError(!error)

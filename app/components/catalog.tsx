@@ -3,6 +3,7 @@ import axios from "axios"
 import Image from "next/image"
 import Link from "next/link"
 
+
 export default function Catalog() {
 
   const { data: posts, isLoading } = useQuery({
@@ -12,6 +13,8 @@ export default function Catalog() {
       return response.data;
     }
   })
+
+
 
   return (
     <>
@@ -26,7 +29,7 @@ export default function Catalog() {
                 <Image src={post.image} alt={post.subject} width={150} height={150} className="pb-1"/>
               </Link>
               <p><span className="font-bold">R: {post.replies} / </span>I: {post.images}</p> 
-              <p className="max-w-[150px] text-center line-clamp-[14]"><span className="font-bold">{post.subject}</span>: {post.comment}</p>
+              <p className="max-w-[150px] text-center line-clamp-[10]"><span className="font-bold">{post.subject}</span>: {post.comment}</p>
             </div>
           ))}
         </div>

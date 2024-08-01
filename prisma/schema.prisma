@@ -16,7 +16,7 @@ model Post {
   replies          Int                @default(0)
   images           Int                @default(0)
   updatedAt        DateTime           @map("updated_at") @default(now()) @db.Timestamptz(6)
-  fourbran_replies ThreadReplies[]
+  ThreadReplies   ThreadReplies[]
 
   @@map("fourbran_post")
 }
@@ -26,9 +26,10 @@ model ThreadReplies {
   createdAt        DateTime   @map("created_at") @default(now()) @db.Timestamptz(6)
   image            String?
   comment          String
-  postId           Int  
-  replyReferences  Int[]
-  fourbran_post    Post     @relation(fields: [postId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "post_id_fkey")
+  postId           Int        @map("post_id")
+  replyReferences  Int[]      @map("reply_references")
+  Post    Post     @relation(fields: [postId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "post_id_fkey")
 
   @@index([postId], map: "fki_post_id_fkey")
+  @@map("fourbran_replies")
 }
