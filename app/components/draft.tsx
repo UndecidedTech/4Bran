@@ -6,7 +6,8 @@ export default function Draft() {
   const [draftMode, setDraftMode] = useState(false);
   const [subject, setSubject] = useState("");
   const [comment, setComment] = useState("");
-  const [file, setFile] = useState("about:blank");
+  const [blobUrl, setBlobUrl] = useState("about:blank");
+  const [error, setError] = useState(false);
 
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -15,19 +16,25 @@ export default function Draft() {
 
     const file = e.target.files[0];
     const objectUrl = window.URL.createObjectURL(file);
-    setFile(objectUrl);
+    setBlobUrl(objectUrl);
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("subject", subject);
-    formData.append("comment", comment);
-    formData.append("file", file);
+    try {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append("subject", subject);
+      formData.append("comment", comment);
 
-    const response = await axios.post('/api/upload')
+      const blobFile = await fetch(blobUrl)
+      const blob = await blobFile.blob()
+      formData.append("file", new File([blob], blobUrl, { type: blob.type }));
 
-    console.log(response)
+      await axios.post('/api/upload/post', formData)
+
+    } catch (e) {
+      setError(!error)
+    }
   }
 
   return (
@@ -37,6 +44,7 @@ export default function Draft() {
           onSubmit={(e) => handleSubmit(e)}
           className="flex flex-col gap-y-1 text-sm"
         >
+          <p className="text-xs text-red-500">{error ? "A post could not be created at this time. Please try again later." : ""}</p>
           <div className="flex gap-x-1">
             <div className="min-w-[90px] flex items-center bg-blue-400 font-bold rounded-sm py-0.5 px-2 border border-black">
               Subject
@@ -58,7 +66,7 @@ export default function Draft() {
           </div>
         </form>
       ) : (
-        <p className="text-[22px]">[<button onClick={() => setDraftMode(!draftMode)} className="hover:text-slate-400">Start a New Thread</button>]</p> 
+        <p className="text-[22px]">[<button onClick={() => setDraftMode(!draftMode)} className="text-slate-600 hover:text-slate-400">Start a New Thread</button>]</p> 
       )}
     </div>
   )
