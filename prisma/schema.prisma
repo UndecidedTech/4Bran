@@ -7,14 +7,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model post {
-  id         Int      @id(map: "post_pkey") @default(autoincrement())
-  created_at DateTime @default(now()) @db.Timestamptz(6)
-  image      String
-  subject    String
-  comment    String
-  replies    Int      @default(0)
-  images     Int      @default(0)
+model Post {
+  id               Int                @id(map: "post_pkey") @default(autoincrement())
+  createdAt        DateTime           @map("created_at") @default(now()) @db.Timestamptz(6)
+  image            String
+  subject          String
+  comment          String
+  replies          Int                @default(0)
+  images           Int                @default(0)
+  updatedAt        DateTime           @map("updated_at") @default(now()) @db.Timestamptz(6)
+  fourbran_replies ThreadReplies[]
 
   @@map("fourbran_post")
+}
+
+model ThreadReplies {
+  id               Int        @id @default(autoincrement())
+  createdAt        DateTime   @map("created_at") @default(now()) @db.Timestamptz(6)
+  image            String?
+  comment          String
+  postId           Int  
+  replyReferences  Int[]
+  fourbran_post    Post     @relation(fields: [postId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "post_id_fkey")
+
+  @@index([postId], map: "fki_post_id_fkey")
 }

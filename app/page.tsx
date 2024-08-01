@@ -1,7 +1,7 @@
 "use client";
-import Draft from "./components/draft";
 import Catalog from "./components/catalog";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import ComposePost from "./components/home/compose-post";
 
 export default function Home() {
   const queryClient = new QueryClient();
@@ -12,7 +12,7 @@ export default function Home() {
         <h1 className="text-5xl font-extrabold text-blue-500 tracking-tight sm:text-[3rem]">
           /b/ - 4Bran
         </h1>
-        <Draft />
+        <ComposePost />
         <QueryClientProvider client={queryClient}>
           <Catalog />
         </QueryClientProvider>
