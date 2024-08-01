@@ -30,7 +30,7 @@ export default function Draft() {
       const blob = await blobFile.blob()
       formData.append("file", new File([blob], blobUrl, { type: blob.type }));
 
-      await axios.post('/api/upload/post', formData)
+      await axios.post('/api/posts', formData)
 
     } catch (e) {
       setError(!error)

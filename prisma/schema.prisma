@@ -13,6 +13,8 @@ model post {
   image      String
   subject    String
   comment    String
+  replies    Int      @default(0)
+  images     Int      @default(0)
 
   @@map("fourbran_post")
 }

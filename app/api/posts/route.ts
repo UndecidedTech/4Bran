@@ -61,3 +61,13 @@ export async function POST(req: Request, res: NextApiResponse) {
     return NextResponse.json({ message: "Error creating new post" });
   }
 }
+
+export async function GET(req: Request, res: NextApiResponse) {
+  try {
+    const posts = await prisma.post.findMany();
+    return NextResponse.json(posts);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ message: "Error retrieving posts" });
+  }
+}
