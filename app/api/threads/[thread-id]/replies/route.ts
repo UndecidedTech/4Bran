@@ -1,5 +1,5 @@
-import { getImageMetadata, uploadImageToS3 } from "@/api/functions";
-import { prisma } from "@/api/prisma";
+import { getImageMetadata, uploadImageToS3 } from "@/utility/functions";
+import { prisma } from "@/utility/prisma";
 import { NextApiResponse } from "next";
 import { NextResponse } from "next/server";
 

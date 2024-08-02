@@ -1,7 +1,7 @@
 import { NextApiResponse } from "next";
 import { NextResponse } from "next/server";
-import { prisma } from "@/api/prisma";
-import { uploadImageToS3 } from "@/api/functions";
+import { prisma } from "@/utility/prisma";
+import { uploadImageToS3 } from "@/utility/functions";
 
 export async function POST(req: Request, res: NextApiResponse) {
   try {
