@@ -6,13 +6,11 @@ import { NextResponse } from "next/server";
 export async function GET(req: Request, res: NextApiResponse) {
   try {
     const url = new URL(req.url);
-
-    const isProd = process.env.NODE_ENV === 'production';
-    const id = Number(url.pathname.split('/')[isProd ? 2 : 3]);
+    const id = url.searchParams.get('id')
 
     const post = await prisma.post.findUnique({
       where: {
-        id,
+        id: Number(id),
       },
       include: {
         ThreadReplies: {

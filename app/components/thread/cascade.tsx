@@ -33,7 +33,11 @@ export default function Cascade() {
   const { data: thread, isLoading } = useQuery({
     queryKey: ['thread', params.id],
     queryFn: async () => {
-      const response = await axios.get(`/api/threads/${params.id}/replies`)
+      const response = await axios.get(`/api/threads/${params.id}/replies`, {
+        params: {
+          id: params.id
+        }
+      })
       setRatio(response.data.imageMetadata.resolution.split('x')[0] / 150)
       response.data.post.ThreadReplies.forEach((reply: any) => setAllReplyIds(prev => new Map(prev).set(reply.id, 1)))
       setAllReplyIds(prev => new Map(prev).set(response.data.post.id, 1))
