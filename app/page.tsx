@@ -5,6 +5,8 @@ import ComposePost from "./components/home/compose-post";
 
 export default function Home() {
   const queryClient = new QueryClient();
+  
+  console.log(`         \/ \\\r\n        |\\_\/|\r\n        |---|\r\n        |   |\r\n        |   |\r\n      _ |=-=| _\r\n  _  \/ \\|   |\/ \\\r\n \/ \\|   |   |   ||\\\r\n|   |   |   |   | \\>\r\n|   |   |   |   |   \\\r\n| -   -   -   - |)   )\r\n|                   \/\r\n \\                 \/\r\n  \\               \/\r\n   \\             \/\r\n    \\           \/`)
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-start bg-gradient-to-b from-blue-200 to-blue-50 to-10% text-black">    

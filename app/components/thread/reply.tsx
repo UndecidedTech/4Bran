@@ -2,7 +2,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { formatDate } from "../utility/functions";
 
-export default function Reply({ reply, replyMode, setReplyMode }: { reply: any, replyMode: Number, setReplyMode: React.Dispatch<React.SetStateAction<number>> }) {
+export default function Reply({ replyComment, setReplyComment, reply, replyMode, setReplyMode }: { replyComment: string, setReplyComment: React.Dispatch<React.SetStateAction<string>>, reply: any, replyMode: Number, setReplyMode: React.Dispatch<React.SetStateAction<number>> }) {
   const [ratio, setRatio] = useState(1);
   const [width, setWidth] = useState(150);
   const [height, setHeight] = useState(150);
@@ -21,16 +21,21 @@ export default function Reply({ reply, replyMode, setReplyMode }: { reply: any, 
     setEnlarged(!enlarged);
   }
 
-  console.log(reply)
+  function handleReplyClick(){
+    if (!replyMode) {
+      setReplyMode(reply.id)
+    }
+    setReplyComment(replyComment + `>>${reply.id}`)
+  }
 
   return (
-    <div className="clear-right text-[13px] bg-inherit my-0.5 pt-1 px-2" id={reply.id}>
+    <div id={reply.id.toString()} className="clear-right text-[13px] bg-inherit my-0.5 pt-1 px-2">
       <div className="flex bg-blue-200 max-w-fit pt-1 pb-3">
         <div className="px-2 flex flex-col ">
           <div className="flex">
             <span className="px-2 font-bold text-green-700 ">Anonymous</span>
             <span className="px-1 bg-blue-200">{formatDate(reply.createdAt)}</span>
-            <span className="px-1 hover:text-red-600 hover:cursor-pointer" onClick={() => setReplyMode(reply.id)}>No. {reply.id}</span>
+            <span className="px-1 hover:text-red-600 hover:cursor-pointer" onClick={handleReplyClick}>No. {reply.id}</span>
             {reply.replyReferences && reply.replyReferences.map((reply: any) => <span className="px-1 underline text-[10px] text-slate-600 hover:text-red-600 hover:cursor-pointer">&gt;&gt;{reply.id}</span>)}
           </div>
           {reply.image && (
@@ -54,7 +59,6 @@ export default function Reply({ reply, replyMode, setReplyMode }: { reply: any, 
             <span className="clear-right">
               <div className="flex">
                 <blockquote className="clear-right w-full pt-2 px-2 text-[12px]">{reply.comment}</blockquote>
-
               </div>
             </span>
           </div>

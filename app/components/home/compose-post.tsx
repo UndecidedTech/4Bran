@@ -50,23 +50,27 @@ export default function ComposePost() {
         >
           <p className="text-xs text-red-500">{error ? "A post could not be created at this time. Please try again later." : ""}</p>
           <div className="flex gap-x-1">
-            <div className="min-w-[90px] flex items-center bg-blue-400 font-bold rounded-sm py-0.5 px-2 border border-black">
+            <label htmlFor="subject" className="min-w-[90px] flex items-center bg-blue-400 font-bold rounded-sm py-0.5 px-2 border border-black">
               Subject
+            </label>
+            <div className="flex pl-1 border border-black">
+              <input id="subject" className="focus:outline-none" type="text" value={subject} onChange={(e) => setSubject(e.target.value)} required />
             </div>
-            <input id="subject" className="border border-black" type="text" value={subject} onChange={(e) => setSubject(e.target.value)} required />
             <button className="bg-blue-100 border border-black px-2">Post</button>
           </div>
           <div className="flex gap-x-1">
-            <label className="min-w-[90px] flex items-center bg-blue-400 font-bold rounded-sm py-0.5 px-2 border border-black">
+            <label htmlFor="comment" className="min-w-[90px] flex items-center bg-blue-400 font-bold rounded-sm py-0.5 px-2 border border-black">
               Comment
             </label>
-            <textarea id="comment" rows={4} cols={50} className="w-full border border-black max-w-[260px]" value={comment} onChange={(e) => setComment(e.target.value)} required />
+            <div className="flex p-1 border border-black">
+              <textarea id="comment" rows={4} cols={50} className="focus:outline-none w-full max-w-[260px]" value={comment} onChange={(e) => setComment(e.target.value)} required />
+            </div>
           </div>
           <div className="flex gap-x-1">
             <label htmlFor="file-upload" className="min-w-[90px] flex items-center bg-blue-400 font-bold rounded-sm py-0.5 px-2 border border-black">
               File
             </label>
-            <input id="file-upload" type="file" accept="image/*" onChange={(e) => handleFileChange(e)} required/>
+            <input id="file-upload" className="" type="file" accept="image/*" onChange={(e) => handleFileChange(e)} required/>
           </div>
         </form>
       ) : (

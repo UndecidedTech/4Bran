@@ -14,6 +14,7 @@ export default function Cascade() {
   const [height, setHeight] = useState(175);
   const [enlarged, setEnlarged] = useState(false);
   const [replyMode, setReplyMode] = useState(0);
+  const [replyComment, setReplyComment] = useState("");
 
   function handleImageClick() {
     if (!thread) return;
@@ -41,8 +42,6 @@ export default function Cascade() {
     },
   })
 
-  console.log(thread)
-
   return (
     <>
       {isLoading && <p>Loading...</p>}
@@ -67,14 +66,14 @@ export default function Cascade() {
               <span className="px-1 font-bold text-green-700">Anonymous</span>
               <span className="px-1">{formatDate(thread.data.post.createdAt)}</span>
               <span className="px-1 hover:text-red-600 hover:cursor-pointer" onClick={handleReplyClick}>No. {thread.data.post.id}</span>
-              {thread.data.post.ThreadReplies.map((reply: any) => <span className="px-0.5 underline text-[10px] text-slate-600 hover:text-red-600 hover:cursor-pointer">&gt;&gt;{reply.id}</span>)}
+              {thread.data.post.ThreadReplies.map((reply: any) => <a key={reply.id} href={`#${reply.id}`} className="px-0.5 underline text-[10px] text-slate-600 hover:text-red-600 hover:cursor-pointer">&gt;&gt;{reply.id}</a>)}
             </span>
             <blockquote className="clear-right mx-2 col-span-1 pt-2 pb-4 px-1 text-[12px]">{thread.data.post.comment}</blockquote>
-            {thread.data.post.ThreadReplies.map((reply: any) => <Reply reply={reply} replyMode={replyMode} setReplyMode={setReplyMode} />)}
+            {thread.data.post.ThreadReplies.map((reply: any) => <Reply key={reply.id} replyComment={replyComment} setReplyComment={setReplyComment} reply={reply} replyMode={replyMode} setReplyMode={setReplyMode} />)}
           </div>
         </div>
       )}
-      {replyMode !== 0 && <ComposeReplyBox replyMode={replyMode} setReplyMode={setReplyMode} />}
+      {replyMode !== 0 && <ComposeReplyBox replyComment={replyComment} setReplyComment={setReplyComment} replyMode={replyMode} setReplyMode={setReplyMode} />}
     </>
   )
 }

@@ -51,10 +51,12 @@ export default function ComposeReply() {
         >
           <p className="text-xs text-red-500">{error ? "A post could not be created at this time. Please try again later." : ""}</p>
           <div className="flex gap-x-1">
-            <label className="min-w-[90px] flex items-center bg-blue-400 font-bold rounded-sm py-0.5 px-2 border border-black">
+            <label htmlFor="comment" className="min-w-[90px] flex items-center bg-blue-400 font-bold rounded-sm py-0.5 px-2 border border-black">
               Comment
             </label>
-            <textarea id="comment" rows={4} cols={50} className="w-full border border-black max-w-[260px]" value={comment} onChange={(e) => setComment(e.target.value)} required />
+            <div className="flex p-1 border border-black">
+              <textarea id="comment" rows={4} cols={50} className="w-full focus:outline-none max-w-[260px]" value={comment} onChange={(e) => setComment(e.target.value)} required />
+            </div>
             <button className="h-[26px] bg-blue-100 border border-black px-2">Post</button>
           </div>
           <div className="flex gap-x-1">
