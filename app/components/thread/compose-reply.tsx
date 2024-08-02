@@ -35,7 +35,7 @@ export default function ComposeReply() {
         formData.append("file", new File([blob], blobUrl, { type: blob.type }));
       }
 
-      await axios.post(`/api/threads/replies/${params.id}`, formData)
+      await axios.post(`/api/threads/${params.id}/replies`, formData)
       location.reload()
     } catch (e) {
       setError(!error)
