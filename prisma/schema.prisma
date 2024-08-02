@@ -19,22 +19,23 @@ model Post {
   imageResolution String          @map("image_resolution")
   imageName       String          @map("image_name")
   imageSize       String          @map("image_size")
+  directReplies   Int[]           @map("direct_replies")
   ThreadReplies   ThreadReplies[]
 
   @@map("fourbran_post")
 }
 
 model ThreadReplies {
-  id               Int      @id @default(autoincrement())
-  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  image            String?
-  comment          String
-  postId           Int      @map("post_id")
-  replyReferences  Int[]    @map("reply_references")
-  imageResolution  String?  @map("image_resolution")  
-  imageName        String?  @map("image_name")
-  imageSize        String?  @map("image_size")
-  Post             Post     @relation(fields: [postId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "post_id_fkey")
+  id              Int      @id @default(autoincrement())
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  image           String?
+  comment         String
+  postId          Int      @map("post_id")
+  replyReferences Int[]    @map("reply_references")
+  imageResolution String?  @map("image_resolution")
+  imageName       String?  @map("image_name")
+  imageSize       String?  @map("image_size")
+  Post            Post     @relation(fields: [postId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "post_id_fkey")
 
   @@index([postId], map: "fki_post_id_fkey")
   @@map("fourbran_replies")

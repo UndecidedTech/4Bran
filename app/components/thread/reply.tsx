@@ -2,7 +2,39 @@ import Image from "next/image";
 import { useState } from "react";
 import { formatDate } from "../utility/functions";
 
-export default function Reply({ replyComment, setReplyComment, reply, replyMode, setReplyMode }: { replyComment: string, setReplyComment: React.Dispatch<React.SetStateAction<string>>, reply: any, replyMode: Number, setReplyMode: React.Dispatch<React.SetStateAction<number>> }) {
+function formatComment(comment: string, allReplyIds: Map<any, any>, replyId: number) {
+  // Split the comment by newlines and special formatting rules
+  const parts = comment.split(/(>>\d+|>.+?$)/gm);
+  
+  return parts.map((part, index) => {
+    // Handle replies (>> followed by numbers)
+    if (part.startsWith(">>")) {
+      const id = Number(part.slice(2));
+      if (allReplyIds.has(id) && id < replyId) {
+        return (
+          <a key={index} href={`#${part.slice(2)}`} className="text-red-600">
+            {part}
+          </a>
+        );
+      } else return part;
+    // Handle green text (lines that start with a single ">")
+    } else if (part.startsWith(">") && !part.startsWith(">>")) {
+      return (
+        <span key={index} className="text-[#789922]">
+          {part}
+        </span>
+      );
+    // Handle newlines
+    } else if (part === "\n") {
+      return <br key={index} />;
+    // Handle regular text
+    } else {
+      return part;
+    }
+  });
+}
+
+export default function Reply({ allReplyIds, replyComment, setReplyComment, reply, replyMode, setReplyMode }: { allReplyIds: Map<any, any>, replyComment: string, setReplyComment: React.Dispatch<React.SetStateAction<string>>, reply: any, replyMode: Number, setReplyMode: React.Dispatch<React.SetStateAction<number>> }) {
   const [ratio, setRatio] = useState(1);
   const [width, setWidth] = useState(150);
   const [height, setHeight] = useState(150);
@@ -36,7 +68,7 @@ export default function Reply({ replyComment, setReplyComment, reply, replyMode,
             <span className="px-2 font-bold text-green-700 ">Anonymous</span>
             <span className="px-1 bg-blue-200">{formatDate(reply.createdAt)}</span>
             <span className="px-1 hover:text-red-600 hover:cursor-pointer" onClick={handleReplyClick}>No. {reply.id}</span>
-            {reply.replyReferences && reply.replyReferences.map((reply: any) => <span className="px-1 underline text-[10px] text-slate-600 hover:text-red-600 hover:cursor-pointer">&gt;&gt;{reply.id}</span>)}
+            {reply.replyReferences && reply.replyReferences.map((reply: any) => <span className="px-1 underline text-[10px] text-slate-600 hover:text-red-600 hover:cursor-pointer">&gt;&gt;{reply}</span>)}
           </div>
           {reply.image && (
             <div className="px-2">
@@ -58,7 +90,7 @@ export default function Reply({ replyComment, setReplyComment, reply, replyMode,
             )}
             <span className="clear-right">
               <div className="flex">
-                <blockquote className="clear-right w-full pt-2 px-2 text-[12px]">{reply.comment}</blockquote>
+                <blockquote className="clear-right whitespace-pre-wrap w-full pt-2 px-2 text-[12px]">{formatComment(reply.comment, allReplyIds, reply.id)}</blockquote>
               </div>
             </span>
           </div>

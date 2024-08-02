@@ -15,6 +15,7 @@ export default function Cascade() {
   const [enlarged, setEnlarged] = useState(false);
   const [replyMode, setReplyMode] = useState(0);
   const [replyComment, setReplyComment] = useState("");
+  const [allReplyIds, setAllReplyIds] = useState<Map<any, any>>(new Map());
 
   function handleImageClick() {
     if (!thread) return;
@@ -33,14 +34,18 @@ export default function Cascade() {
     setReplyMode(1);
   }
 
-  const { data: thread, isLoading, refetch } = useQuery({
+  const { data: thread, isLoading } = useQuery({
     queryKey: ['thread', params.id],
     queryFn: async () => {
       const response = await axios.get(`/api/threads/${params.id}/replies`)
       setRatio(response.data.imageMetadata.resolution.split('x')[0] / 150)
+      response.data.post.ThreadReplies.forEach((reply: any) => setAllReplyIds(prev => new Map(prev).set(reply.id, 1)))
+      setAllReplyIds(prev => new Map(prev).set(response.data.post.id, 1))
       return response;
     },
   })
+
+  console.log(allReplyIds)
 
   return (
     <>
@@ -66,10 +71,10 @@ export default function Cascade() {
               <span className="px-1 font-bold text-green-700">Anonymous</span>
               <span className="px-1">{formatDate(thread.data.post.createdAt)}</span>
               <span className="px-1 hover:text-red-600 hover:cursor-pointer" onClick={handleReplyClick}>No. {thread.data.post.id}</span>
-              {thread.data.post.ThreadReplies.map((reply: any) => <a key={reply.id} href={`#${reply.id}`} className="px-0.5 underline text-[10px] text-slate-600 hover:text-red-600 hover:cursor-pointer">&gt;&gt;{reply.id}</a>)}
+              {thread.data.post.directReplies && thread.data.post.directReplies.map((reply: number) => <a key={reply} href={`#${reply.toString()}`} className="px-0.5 underline text-[10px] text-slate-600 hover:text-red-600 hover:cursor-pointer">&gt;&gt;{reply}</a>)}
             </span>
-            <blockquote className="clear-right mx-2 col-span-1 pt-2 pb-4 px-1 text-[12px]">{thread.data.post.comment}</blockquote>
-            {thread.data.post.ThreadReplies.map((reply: any) => <Reply key={reply.id} replyComment={replyComment} setReplyComment={setReplyComment} reply={reply} replyMode={replyMode} setReplyMode={setReplyMode} />)}
+            <blockquote className="clear-right whitespace-pre-wrap mx-2 col-span-1 pt-2 pb-4 px-1 text-[12px]">{thread.data.post.comment}</blockquote>
+            {thread.data.post.ThreadReplies.map((reply: any) => <Reply key={reply.id} allReplyIds={allReplyIds} replyComment={replyComment} setReplyComment={setReplyComment} reply={reply} replyMode={replyMode} setReplyMode={setReplyMode} />)}
           </div>
         </div>
       )}

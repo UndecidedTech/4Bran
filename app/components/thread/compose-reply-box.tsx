@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 export default function ComposeReplyBox({
   replyComment,
@@ -14,10 +14,6 @@ export default function ComposeReplyBox({
   replyMode: Number,
   setReplyMode: React.Dispatch<React.SetStateAction<number>>
 }) {
-
-  useEffect(() => {
-
-  }, [replyComment])
 
   const params = useParams();
   const [blobUrl, setBlobUrl] = useState("about:blank");
@@ -56,7 +52,7 @@ export default function ComposeReplyBox({
   }
 
   return (
-    <div className="absolute top-20 right-5 flex flex-col justify-center border-t border-b border-slate-400 bg-blue-200 pb-1 px-0.5">
+    <div className="fixed top-20 right-5 flex flex-col justify-center border-t border-b border-slate-400 bg-blue-200 pb-1 px-0.5">
       <div className="flex justify-center font-bold bg-blue-500 border border-black text-[13px] px-1">
         <p className="ml-auto pl-4">Reply to Thread No.{replyMode.toString()}</p>
         <button onClick={(e) => setReplyMode(0)} className="ml-auto">X</button>

@@ -17,7 +17,6 @@ export async function GET(req: Request, res: NextApiResponse) {
             createdAt: "asc",
           }
         }
-
       }
     })
 
@@ -34,38 +33,111 @@ export async function GET(req: Request, res: NextApiResponse) {
   }
 }
 
+function getReplyIds(comment: string) {
+  let left = 0;
+  let count = 0;
+  let replyIds = [];
+
+  for (let i = 0; i < comment.length; i++) {
+    if (comment[i] === '>' && count < 2) {
+      count++;
+    } else if (comment[i].charCodeAt(0) >= 48 && comment[i].charCodeAt(0) <= 57 && count >= 2) {
+      count++;
+      if (comment.length === i + 1) {
+        replyIds.push(comment.slice(left + 2, i + 1));
+      }
+    } else {
+      if (count >= 2) {
+        replyIds.push(comment.slice(left + 2, i));
+        left = i + 1;
+        count = 0;
+      }
+      left = i + 1;
+      count = 0;
+    }
+  }
+
+  return replyIds;
+}
+
 export async function POST(req: Request, res: NextApiResponse) {
   try {
     const url = new URL(req.url);
-    const id = Number(url.pathname.split('/')[3]);
+    const postId = Number(url.pathname.split('/')[3]);
     const formData = await req.formData();
+    const comment = formData.get('comment') as string;
 
     const image = formData.get('file') as unknown as File;
 
-    if (!image) {
-      await prisma.threadReplies.create({
-        data: {
-          comment: formData.get('comment') as string,
-          postId: id,
-        },
-      })
-    } else {
-      const imageData = await uploadImageToS3({ file: image, type: 'reply', fileName: formData.get('fileName') as string });
-      await prisma.threadReplies.create({
-        data: {
-          image: imageData.imageLink,
-          comment: formData.get('comment') as string,
-          postId: id,
-          imageResolution: imageData.resolution,
-          imageName: imageData.fileName,
-          imageSize: imageData.fileSize,
-        },
-      })
+    let imageData;
+
+    if (image) {
+      imageData = await uploadImageToS3({ file: image, type: 'reply', fileName: formData.get('fileName') as string });
+    }
+
+    const newReplyId = await prisma.threadReplies.create({
+      data: {
+        image: imageData?.imageLink || null,
+        comment,
+        postId,
+        imageResolution: imageData?.resolution,
+        imageName: imageData?.fileName || null,
+        imageSize: imageData?.fileSize || null,
+      },
+      select: {
+        id: true,
+      }
+    })
+
+    const allReplyIdsInComment = getReplyIds(comment);
+
+    const allThreadReplies = await prisma.threadReplies.findMany({
+      where: {
+        postId,
+      },
+      select: {
+        id: true,
+      }
+    })
+
+    const replyMapping = new Map();
+
+    for (const reply of allThreadReplies) {
+      const replyKey = reply.id.toString() as keyof typeof replyMapping;
+      replyMapping.set(replyKey, reply);
+    }
+
+    for (const replyId of allReplyIdsInComment) {
+      const reply = replyMapping.get(replyId);
+      if (reply && reply.id < newReplyId.id) {
+        await prisma.threadReplies.update({
+          where: {
+            id: Number(replyId),
+          },
+          data: {
+            replyReferences: {
+              push: newReplyId.id,
+            },
+          },
+        })
+
+      } else if (Number(replyId) === postId) {
+        await prisma.post.update({
+          where: {
+            id: postId,
+          },
+          data: {
+            directReplies: {
+              push: newReplyId.id,
+            },
+          },
+        })
+      }
     }
 
     await prisma.post.update({
       where: {
-        id,
+        id: postId,
       },
       data: {
         replies: {

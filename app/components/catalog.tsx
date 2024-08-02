@@ -14,8 +14,6 @@ export default function Catalog() {
     }
   })
 
-
-
   return (
     <>
       {isLoading && <p>Loading...</p>}
@@ -26,9 +24,9 @@ export default function Catalog() {
               <Link
                 href={`/thread/${post.id}`}
               >
-                <Image src={post.image} alt={post.subject} width={150} height={150} className="pb-1"/>
+                <Image src={post.image} alt={post.subject} width={150} height={150} className="w-auto max-h-[200px] pb-1 shadow"/>
               </Link>
-              <p><span className="font-bold">R: {post.replies} / </span>I: {post.images}</p> 
+              <p className="text-[11px]"><span className="font-bold">R: {post.replies} / </span>I: {post.images}</p> 
               <p className="max-w-[150px] text-center line-clamp-[10]"><span className="font-bold">{post.subject}</span>: {post.comment}</p>
             </div>
           ))}
