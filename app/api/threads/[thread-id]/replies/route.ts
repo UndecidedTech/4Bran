@@ -50,7 +50,7 @@ export async function POST(req: Request, res: NextApiResponse) {
         },
       })
     } else {
-      const imageData = await uploadImageToS3({ file: image, type: 'reply' });
+      const imageData = await uploadImageToS3({ file: image, type: 'reply', fileName: formData.get('fileName') as string });
       await prisma.threadReplies.create({
         data: {
           image: imageData.imageLink,

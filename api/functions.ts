@@ -54,7 +54,6 @@ export async function getImageMetadata(url: string) {
     Key: `threads/${key}`,
   }
 
-
   const command = new HeadObjectCommand(params);
   const headData = await s3Client.send(command);
   return headData.Metadata;

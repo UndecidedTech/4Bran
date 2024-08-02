@@ -8,6 +8,7 @@ export default function ComposeReply() {
   const [draftMode, setDraftMode] = useState(false);
   const [comment, setComment] = useState("");
   const [blobUrl, setBlobUrl] = useState("about:blank");
+  const [fileName, setFileName] = useState("");
   const [error, setError] = useState(false);
 
 
@@ -16,6 +17,7 @@ export default function ComposeReply() {
     if (!e.target.files || e.target.files.length === 0) return;
 
     const file = e.target.files[0];
+    setFileName(file.name)
     const objectUrl = window.URL.createObjectURL(file);
     setBlobUrl(objectUrl);
   }
@@ -25,6 +27,7 @@ export default function ComposeReply() {
       e.preventDefault();
       const formData = new FormData();
       formData.append("comment", comment);
+      formData.append("fileName", fileName);
 
       if (blobUrl !== "about:blank") {
         const blobFile = await fetch(blobUrl)
