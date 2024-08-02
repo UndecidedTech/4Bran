@@ -2,6 +2,7 @@
 import axios from "axios";
 import { useState } from "react"
 import { useRouter } from "next/navigation";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 export default function ComposePost() {
   const router = useRouter();
@@ -11,6 +12,9 @@ export default function ComposePost() {
   const [blobUrl, setBlobUrl] = useState("about:blank");
   const [fileName, setFileName] = useState("");
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 
@@ -23,18 +27,31 @@ export default function ComposePost() {
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setLoading(true);
+
+    if (!executeRecaptcha) return;
+
+    executeRecaptcha("composePostSubmit").then((token: string) => {
+      submitForm(token);
+    });
+  }
+
+
+  async function submitForm(token: string) {
     try {
-      e.preventDefault();
       const formData = new FormData();
       formData.append("subject", subject);
       formData.append("comment", comment);
       formData.append("fileName", fileName);
+      formData.append("token", token);
       
       const blobFile = await fetch(blobUrl)
       const blob = await blobFile.blob()
       formData.append("file", new File([blob], blobUrl, { type: blob.type }));
 
       const response = await axios.post(`/api/threads`, formData)
+      setLoading(false);
       router.push(`/thread/${response.data.thread.id}`)
     } catch (e) {
       setError(!error)
@@ -56,7 +73,7 @@ export default function ComposePost() {
             <div className="flex pl-1 border border-black">
               <input id="subject" className="focus:outline-none" type="text" value={subject} onChange={(e) => setSubject(e.target.value)} required />
             </div>
-            <button className="bg-blue-100 border border-black px-2">Post</button>
+            <button className="bg-blue-100 border border-black px-2">{loading ? "Please wait, may take up to a minute to process" : "Post"}</button>
           </div>
           <div className="flex gap-x-1">
             <label htmlFor="comment" className="min-w-[90px] flex items-center bg-blue-400 font-bold rounded-sm py-0.5 px-2 border border-black">

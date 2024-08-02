@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.621.0",
+    "@google-cloud/recaptcha-enterprise": "^5.10.0",
     "@prisma/client": "^5.17.0",
     "@tanstack/react-query": "^5.51.16",
     "axios": "^1.7.2",

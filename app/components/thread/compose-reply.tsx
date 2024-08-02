@@ -2,6 +2,7 @@
 import axios from "axios";
 import { useParams } from "next/navigation";
 import { useState } from "react"
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 export default function ComposeReply() {
   const params = useParams();
@@ -10,7 +11,9 @@ export default function ComposeReply() {
   const [blobUrl, setBlobUrl] = useState("about:blank");
   const [fileName, setFileName] = useState("");
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 
@@ -23,11 +26,22 @@ export default function ComposeReply() {
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setLoading(true);
+
+    if (!executeRecaptcha) return;
+
+    executeRecaptcha("compostReplyBoxSubmit").then((token: string) => {
+      submitForm(token);
+    });
+  }
+
+  async function submitForm(token: string) {
     try {
-      e.preventDefault();
       const formData = new FormData();
       formData.append("comment", comment);
       formData.append("fileName", fileName);
+      formData.append("token", token);
 
       if (blobUrl !== "about:blank") {
         const blobFile = await fetch(blobUrl)
@@ -57,7 +71,7 @@ export default function ComposeReply() {
             <div className="flex p-1 border border-black">
               <textarea id="comment" rows={4} cols={50} className="w-full focus:outline-none max-w-[260px]" value={comment} onChange={(e) => setComment(e.target.value)} required />
             </div>
-            <button className="h-[26px] bg-blue-100 border border-black px-2">Post</button>
+            <button className="h-[26px] bg-blue-100 border border-black px-2">{loading ? "Please wait, may take up to a minute to process" : "Post"}</button>
           </div>
           <div className="flex gap-x-1">
             <label className="min-w-[90px] flex items-center bg-blue-400 font-bold rounded-sm py-0.5 px-2 border border-black">

@@ -2,6 +2,7 @@
 import Catalog from "./components/catalog";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ComposePost from "./components/home/compose-post";
+import GoogleCaptchaWrapper from "./components/google-recaptcha";
 
 export default function Home() {
   const queryClient = new QueryClient();
@@ -14,10 +15,12 @@ export default function Home() {
         <h1 className="text-5xl font-extrabold text-rose-500 tracking-tight sm:text-[2rem]">
           /b/ - Random
         </h1>
-        <ComposePost />
-        <QueryClientProvider client={queryClient}>
-          <Catalog />
-        </QueryClientProvider>
+        <GoogleCaptchaWrapper>
+          <ComposePost />
+          <QueryClientProvider client={queryClient}>
+            <Catalog />
+          </QueryClientProvider>
+        </GoogleCaptchaWrapper>
       </div>
     </main>
   );
