@@ -66,7 +66,7 @@ export default function ComposePost() {
             <label htmlFor="file-upload" className="min-w-[90px] flex items-center bg-blue-400 font-bold rounded-sm py-0.5 px-2 border border-black">
               File
             </label>
-            <input id="file-upload" type="file" accept="image/*" onChange={(e) => handleFileChange(e)} />
+            <input id="file-upload" type="file" accept="image/*" onChange={(e) => handleFileChange(e)} required/>
           </div>
         </form>
       ) : (

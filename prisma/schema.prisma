@@ -8,27 +8,33 @@ datasource db {
 }
 
 model Post {
-  id               Int                @id(map: "post_pkey") @default(autoincrement())
-  createdAt        DateTime           @map("created_at") @default(now()) @db.Timestamptz(6)
-  image            String
-  subject          String
-  comment          String
-  replies          Int                @default(0)
-  images           Int                @default(0)
-  updatedAt        DateTime           @map("updated_at") @default(now()) @db.Timestamptz(6)
+  id              Int             @id(map: "post_pkey") @default(autoincrement())
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  image           String
+  subject         String
+  comment         String
+  replies         Int             @default(0)
+  images          Int             @default(0)
+  updatedAt       DateTime        @default(now()) @map("updated_at") @db.Timestamptz(6)
+  imageResolution String          @map("image_resolution")
+  imageName       String          @map("image_name")
+  imageSize       String          @map("image_size")
   ThreadReplies   ThreadReplies[]
 
   @@map("fourbran_post")
 }
 
 model ThreadReplies {
-  id               Int        @id @default(autoincrement())
-  createdAt        DateTime   @map("created_at") @default(now()) @db.Timestamptz(6)
+  id               Int      @id @default(autoincrement())
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   image            String?
   comment          String
-  postId           Int        @map("post_id")
-  replyReferences  Int[]      @map("reply_references")
-  Post    Post     @relation(fields: [postId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "post_id_fkey")
+  postId           Int      @map("post_id")
+  replyReferences  Int[]    @map("reply_references")
+  imageResolution  String?  @map("image_resolution")  
+  imageName        String?  @map("image_name")
+  imageSize        String?  @map("image_size")
+  Post             Post     @relation(fields: [postId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "post_id_fkey")
 
   @@index([postId], map: "fki_post_id_fkey")
   @@map("fourbran_replies")

@@ -13,13 +13,16 @@ export async function POST(req: Request, res: NextApiResponse) {
       return NextResponse.json({ message: "No image uploaded" });
     }
 
-    const imagelink = await uploadImageToS3({ file: image, type: 'thread', fileName: formData.get('fileName') as string });
+    const imageData = await uploadImageToS3({ file: image, type: 'thread', fileName: formData.get('fileName') as string });
 
     const thread = await prisma.post.create({
       data: {
-        image: imagelink,
+        image: imageData.imageLink,
         subject: formData.get('subject') as string,
         comment: formData.get('comment') as string,
+        imageSize: imageData.fileSize,
+        imageResolution: imageData.resolution,
+        imageName: imageData.fileName,
       },
       select: {
         id: true,

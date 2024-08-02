@@ -58,7 +58,7 @@ export default function ComposeReply() {
             <label className="min-w-[90px] flex items-center bg-blue-400 font-bold rounded-sm py-0.5 px-2 border border-black">
               File
             </label>
-            <input id="file-upload" type="file" accept="image/*" onChange={(e) => handleFileChange(e)} required />
+            <input id="file-upload" type="file" accept="image/*" onChange={(e) => handleFileChange(e)} />
           </div>
         </form>
       ) : (

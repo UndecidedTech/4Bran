@@ -13,13 +13,14 @@ export async function uploadImageToS3({ file, type, fileName }: { file: File, ty
   const buffer = Buffer.from(await file.arrayBuffer());
 
   const imageMetadata = await sharp(buffer).metadata();
-  const fileSize = imageMetadata.size;
+  const bits = imageMetadata.size;
   const resolution = `${imageMetadata.width}x${imageMetadata.height}`;
 
-  if (!fileSize || !resolution || !fileName) {
+  if (!bits || !resolution || !fileName) {
     throw new Error('Failed to get image metadata');
   }
 
+  const fileSize = bits > 1024 * 1024 ? `${(bits / (1024 * 1024)).toFixed(2)} MB` : `${(bits / 1024).toFixed(2)} KB`
 
   const date = new Date();
   const key = type === 'thread' ? `threads/${date.getTime()}` : `replies/${date.getTime()}`;
@@ -30,7 +31,7 @@ export async function uploadImageToS3({ file, type, fileName }: { file: File, ty
     Body: buffer,
     ContentType: file.type || '',
     Metadata: {
-      fileSize: fileSize > 1024 * 1024 ? `${(fileSize / (1024 * 1024)).toFixed(2)} MB` : `${(fileSize / 1024).toFixed(2)} KB`,
+      fileSize,
       resolution,
       fileName,
     }
@@ -43,7 +44,7 @@ export async function uploadImageToS3({ file, type, fileName }: { file: File, ty
     throw new Error('Failed to upload image to S3');
   }
 
-  return `https://${process.env.AWS_S3_BUCKET}.s3.amazonaws.com/${key}`;
+  return { imageLink:`https://${process.env.AWS_S3_BUCKET}.s3.amazonaws.com/${key}`, fileSize, resolution, fileName };
 }
 
 export async function getImageMetadata(url: string) {

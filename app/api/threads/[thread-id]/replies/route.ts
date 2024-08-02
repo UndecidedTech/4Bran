@@ -43,16 +43,38 @@ export async function POST(req: Request, res: NextApiResponse) {
     const image = formData.get('file') as unknown as File;
 
     if (!image) {
-      return NextResponse.json({ message: "No image uploaded" });
+      await prisma.threadReplies.create({
+        data: {
+          comment: formData.get('comment') as string,
+          postId: id,
+        },
+      })
+    } else {
+      const imageData = await uploadImageToS3({ file: image, type: 'reply' });
+      await prisma.threadReplies.create({
+        data: {
+          image: imageData.imageLink,
+          comment: formData.get('comment') as string,
+          postId: id,
+          imageResolution: imageData.resolution,
+          imageName: imageData.fileName,
+          imageSize: imageData.fileSize,
+        },
+      })
     }
 
-    const imagelink = await uploadImageToS3({ file: image, type: 'reply' });
-
-    await prisma.threadReplies.create({
+    await prisma.post.update({
+      where: {
+        id,
+      },
       data: {
-        image: imagelink,
-        comment: formData.get('comment') as string,
-        postId: id,
+        replies: {
+          increment: 1,
+        },
+        images: {
+          increment: !image ? 0 : 1,
+        },
+        updatedAt: new Date(),
       },
     })
 
