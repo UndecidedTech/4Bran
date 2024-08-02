@@ -18,15 +18,18 @@ export default function ComposeReplyBox({
   const params = useParams();
   const [blobUrl, setBlobUrl] = useState("about:blank");
   const [error, setError] = useState(false);
-
+  const [fileName, setFileName] = useState("");
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+
     if (!e.target.files || e.target.files.length === 0) return;
 
     const file = e.target.files[0];
+    setFileName(file.name)
     const objectUrl = window.URL.createObjectURL(file);
     setBlobUrl(objectUrl);
   }
+
 
   function handlleCommentChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setReplyComment(e.target.value);
@@ -37,6 +40,7 @@ export default function ComposeReplyBox({
       e.preventDefault();
       const formData = new FormData();
       formData.append("comment", replyComment);
+      formData.append("fileName", fileName);
 
       if (blobUrl !== "about:blank") {
         const blobFile = await fetch(blobUrl)

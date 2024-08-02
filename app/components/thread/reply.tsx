@@ -12,7 +12,7 @@ function formatComment(comment: string, allReplyIds: Map<any, any>, replyId: num
       const id = Number(part.slice(2));
       if (allReplyIds.has(id) && id < replyId) {
         return (
-          <a key={index} href={`#${part.slice(2)}`} className="text-red-600">
+          <a key={index} href={`#${part.slice(2)}`} className="text-red-600 underline">
             {part}
           </a>
         );
@@ -57,7 +57,7 @@ export default function Reply({ allReplyIds, reply, handleReplyClick }: { allRep
     <div id={reply.id.toString()} className="clear-right text-[13px] bg-inherit my-0.5 pt-1 px-2">
       <div className="flex bg-blue-200 max-w-fit pt-1 pb-3">
         <div className="px-2 flex flex-col ">
-          <div className="flex">
+          <div className="flex items-center">
             <span className="px-2 font-bold text-green-700 ">Anonymous</span>
             <span className="px-1 bg-blue-200">{formatDate(reply.createdAt)}</span>
             <span className="px-1 hover:text-red-600 hover:cursor-pointer" onClick={() => handleReplyClick({ reply })}>No.{reply.id}</span>
