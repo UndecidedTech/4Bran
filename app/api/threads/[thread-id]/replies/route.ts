@@ -8,8 +8,6 @@ export async function GET(req: Request, res: NextApiResponse) {
     const url = new URL(req.url);
 
     let id;
-    id = Number(url.pathname.split('/')[3]);
-
     const env = process.env.NODE_ENV
 
     if (env === 'development') {
