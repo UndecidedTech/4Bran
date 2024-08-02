@@ -8,7 +8,7 @@ export async function GET(req: Request, res: NextApiResponse) {
     const url = new URL(req.url);
 
     const isProd = process.env.NODE_ENV === 'production';
-    const id = Number(url.pathname.split('/')[isProd ? 5 : 3]);
+    const id = Number(url.pathname.split('/')[isProd ? 4 : 3]);
 
     const post = await prisma.post.findUnique({
       where: {
