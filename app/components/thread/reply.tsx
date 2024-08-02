@@ -34,7 +34,7 @@ function formatComment(comment: string, allReplyIds: Map<any, any>, replyId: num
   });
 }
 
-export default function Reply({ allReplyIds, replyComment, setReplyComment, reply, replyMode, setReplyMode }: { allReplyIds: Map<any, any>, replyComment: string, setReplyComment: React.Dispatch<React.SetStateAction<string>>, reply: any, replyMode: Number, setReplyMode: React.Dispatch<React.SetStateAction<number>> }) {
+export default function Reply({ allReplyIds, reply, handleReplyClick }: { allReplyIds: Map<any, any>, reply: any, handleReplyClick: Function }) {
   const [ratio, setRatio] = useState(1);
   const [width, setWidth] = useState(150);
   const [height, setHeight] = useState(150);
@@ -53,13 +53,6 @@ export default function Reply({ allReplyIds, replyComment, setReplyComment, repl
     setEnlarged(!enlarged);
   }
 
-  function handleReplyClick(){
-    if (!replyMode) {
-      setReplyMode(reply.id)
-    }
-    setReplyComment(replyComment + `>>${reply.id}`)
-  }
-
   return (
     <div id={reply.id.toString()} className="clear-right text-[13px] bg-inherit my-0.5 pt-1 px-2">
       <div className="flex bg-blue-200 max-w-fit pt-1 pb-3">
@@ -67,7 +60,7 @@ export default function Reply({ allReplyIds, replyComment, setReplyComment, repl
           <div className="flex">
             <span className="px-2 font-bold text-green-700 ">Anonymous</span>
             <span className="px-1 bg-blue-200">{formatDate(reply.createdAt)}</span>
-            <span className="px-1 hover:text-red-600 hover:cursor-pointer" onClick={handleReplyClick}>No. {reply.id}</span>
+            <span className="px-1 hover:text-red-600 hover:cursor-pointer" onClick={() => handleReplyClick({ reply })}>No.{reply.id}</span>
             {reply.replyReferences && reply.replyReferences.map((reply: any) => <span className="px-1 underline text-[10px] text-slate-600 hover:text-red-600 hover:cursor-pointer">&gt;&gt;{reply}</span>)}
           </div>
           {reply.image && (

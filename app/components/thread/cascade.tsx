@@ -30,10 +30,6 @@ export default function Cascade() {
     setEnlarged(!enlarged);
   }
 
-  function handleReplyClick() {
-    setReplyMode(1);
-  }
-
   const { data: thread, isLoading } = useQuery({
     queryKey: ['thread', params.id],
     queryFn: async () => {
@@ -45,7 +41,12 @@ export default function Cascade() {
     },
   })
 
-  console.log(allReplyIds)
+  function handleReplyClick({ reply }: { reply: any }) {
+    if (!replyMode) {
+      setReplyMode(reply.id)
+    }
+    setReplyComment(replyComment + `>>${reply.id}`)
+  }
 
   return (
     <>
@@ -70,11 +71,11 @@ export default function Cascade() {
               <span className={`${enlarged ? "pl-2" : ""} pr-1 font-bold text-blue-900 align-top`}>{thread.data.post.subject}</span>  
               <span className="px-1 font-bold text-green-700">Anonymous</span>
               <span className="px-1">{formatDate(thread.data.post.createdAt)}</span>
-              <span className="px-1 hover:text-red-600 hover:cursor-pointer" onClick={handleReplyClick}>No. {thread.data.post.id}</span>
+              <span className="px-1 hover:text-red-600 hover:cursor-pointer" onClick={() => handleReplyClick({ reply: thread.data.post })}>No.{thread.data.post.id}</span>
               {thread.data.post.directReplies && thread.data.post.directReplies.map((reply: number) => <a key={reply} href={`#${reply.toString()}`} className="px-0.5 underline text-[10px] text-slate-600 hover:text-red-600 hover:cursor-pointer">&gt;&gt;{reply}</a>)}
             </span>
             <blockquote className="clear-right whitespace-pre-wrap mx-2 col-span-1 pt-2 pb-4 px-1 text-[12px]">{thread.data.post.comment}</blockquote>
-            {thread.data.post.ThreadReplies.map((reply: any) => <Reply key={reply.id} allReplyIds={allReplyIds} replyComment={replyComment} setReplyComment={setReplyComment} reply={reply} replyMode={replyMode} setReplyMode={setReplyMode} />)}
+            {thread.data.post.ThreadReplies.map((reply: any) => <Reply key={reply.id} allReplyIds={allReplyIds}  reply={reply}  handleReplyClick={handleReplyClick} />)}
           </div>
         </div>
       )}
