@@ -6,7 +6,18 @@ import { NextResponse } from "next/server";
 export async function GET(req: Request, res: NextApiResponse) {
   try {
     const url = new URL(req.url);
-    const id = Number(url.pathname.split('/')[3]);
+
+    let id;
+    id = Number(url.pathname.split('/')[3]);
+
+    const env = process.env.NODE_ENV
+
+    if (env === 'development') {
+      id = Number(url.pathname.split('/')[3]);
+    } else {
+      id = Number(url.pathname.split('/')[5]);
+    }
+
     const post = await prisma.post.findUnique({
       where: {
         id,
