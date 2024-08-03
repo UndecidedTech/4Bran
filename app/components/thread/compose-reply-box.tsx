@@ -2,7 +2,7 @@
 import axios from "axios";
 import { useParams } from "next/navigation";
 import { useState } from "react"
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+// import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 export default function ComposeReplyBox({
   replyComment,
@@ -22,7 +22,7 @@ export default function ComposeReplyBox({
   const [fileName, setFileName] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { executeRecaptcha } = useGoogleReCaptcha();
+  // const { executeRecaptcha } = useGoogleReCaptcha();
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 
@@ -39,23 +39,26 @@ export default function ComposeReplyBox({
     setReplyComment(e.target.value);
   }
 
+  // async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  //   e.preventDefault();
+  //   setLoading(true);
+
+  //   if (!executeRecaptcha) return;
+
+  //   executeRecaptcha("compostReplyBoxSubmit").then((token: string) => {
+  //     submitForm(token);
+  //   });
+  // }
+
+  // async function handleSubmit(token: string) {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
-
-    if (!executeRecaptcha) return;
-
-    executeRecaptcha("compostReplyBoxSubmit").then((token: string) => {
-      submitForm(token);
-    });
-  }
-
-  async function submitForm(token: string) {
     try {
       const formData = new FormData();
       formData.append("comment", replyComment);
       formData.append("fileName", fileName);
-      formData.append("token", token);
+      // formData.append("token", token);
 
       if (blobUrl !== "about:blank") {
         const blobFile = await fetch(blobUrl)
@@ -64,6 +67,7 @@ export default function ComposeReplyBox({
       }
 
       await axios.post(`/api/threads/${params.id}/replies`, formData)
+      setLoading(false);
       location.reload()
     } catch (e) {
       setError(!error)

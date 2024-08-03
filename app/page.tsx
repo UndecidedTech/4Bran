@@ -15,12 +15,12 @@ export default function Home() {
         <h1 className="text-5xl font-extrabold text-rose-500 tracking-tight sm:text-[2rem]">
           /b/ - Random
         </h1>
-        <GoogleCaptchaWrapper>
+        {/* <GoogleCaptchaWrapper> */}
           <ComposePost />
           <QueryClientProvider client={queryClient}>
             <Catalog />
           </QueryClientProvider>
-        </GoogleCaptchaWrapper>
+        {/* </GoogleCaptchaWrapper> */}
       </div>
     </main>
   );

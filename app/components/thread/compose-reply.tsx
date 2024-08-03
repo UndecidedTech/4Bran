@@ -13,7 +13,7 @@ export default function ComposeReply() {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { executeRecaptcha } = useGoogleReCaptcha();
+  // const { executeRecaptcha } = useGoogleReCaptcha();
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 
@@ -25,23 +25,25 @@ export default function ComposeReply() {
     setBlobUrl(objectUrl);
   }
 
+  // async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  //   e.preventDefault();
+  //   setLoading(true);
+
+  //   if (!executeRecaptcha) return;
+
+  //   executeRecaptcha("compostReplySubmit").then((token: string) => {
+  //     submitForm(token);
+  //   });
+  // }
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  // async function submitForm(token: string) {
     e.preventDefault();
     setLoading(true);
-
-    if (!executeRecaptcha) return;
-
-    executeRecaptcha("compostReplyBoxSubmit").then((token: string) => {
-      submitForm(token);
-    });
-  }
-
-  async function submitForm(token: string) {
     try {
       const formData = new FormData();
       formData.append("comment", comment);
       formData.append("fileName", fileName);
-      formData.append("token", token);
+      // formData.append("token", token);
 
       if (blobUrl !== "about:blank") {
         const blobFile = await fetch(blobUrl)
@@ -50,6 +52,7 @@ export default function ComposeReply() {
       }
 
       await axios.post(`/api/threads/${params.id}/replies`, formData)
+      setLoading(false);
       location.reload()
     } catch (e) {
       setError(!error)

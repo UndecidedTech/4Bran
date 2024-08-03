@@ -2,7 +2,7 @@
 import axios from "axios";
 import { useState } from "react"
 import { useRouter } from "next/navigation";
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+// import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 export default function ComposePost() {
   const router = useRouter();
@@ -14,7 +14,7 @@ export default function ComposePost() {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { executeRecaptcha } = useGoogleReCaptcha();
+  // const { executeRecaptcha } = useGoogleReCaptcha();
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 
@@ -26,25 +26,26 @@ export default function ComposePost() {
     setBlobUrl(objectUrl);
   }
 
+  // async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  //   e.preventDefault();
+  //   setLoading(true);
+
+  //   if (!executeRecaptcha) return;
+
+  //   executeRecaptcha("composePostSubmit").then((token: string) => {
+  //     submitForm(token);
+  //   });
+  // }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setLoading(true);
-
-    if (!executeRecaptcha) return;
-
-    executeRecaptcha("composePostSubmit").then((token: string) => {
-      submitForm(token);
-    });
-  }
-
-
-  async function submitForm(token: string) {
+  // async function submitForm(token: string) {
+  e.preventDefault();
     try {
       const formData = new FormData();
       formData.append("subject", subject);
       formData.append("comment", comment);
       formData.append("fileName", fileName);
-      formData.append("token", token);
+      // formData.append("token", token);
       
       const blobFile = await fetch(blobUrl)
       const blob = await blobFile.blob()

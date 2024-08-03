@@ -65,29 +65,29 @@ function getReplyIds(comment: string) {
 export async function POST(req: Request, res: NextApiResponse) {
   try {
     const formData = await req.formData();
-    const token = formData.get('token') as string;
-    const client = new RecaptchaEnterpriseServiceClient();
-    const projectPath = client.projectPath('bran-1722634856780');
-    const request = ({
-      assessment: {
-        event: {
-          token: token,
-          expectedAction: "USER_ACTION",
-          siteKey: process.env.NEXT_PUBLIC_RECAPTCHA_KEY,
-        }
-      },
-      parent: projectPath
-    })
+    // const token = formData.get('token') as string;
+    // const client = new RecaptchaEnterpriseServiceClient();
+    // const projectPath = client.projectPath('bran-1722634856780');
+    // const request = ({
+    //   assessment: {
+    //     event: {
+    //       token: token,
+    //       expectedAction: "USER_ACTION",
+    //       siteKey: process.env.NEXT_PUBLIC_RECAPTCHA_KEY,
+    //     }
+    //   },
+    //   parent: projectPath
+    // })
 
-    const [ response ] = await client.createAssessment(request);
+    // const [ response ] = await client.createAssessment(request);
 
-    if (!response || !response.riskAnalysis || !response.riskAnalysis.score) {
-      return NextResponse.json({ message: "Failed to verify recaptcha" });
-    }
+    // if (!response || !response.riskAnalysis || !response.riskAnalysis.score) {
+    //   return NextResponse.json({ message: "Failed to verify recaptcha" });
+    // }
 
-    if (response.riskAnalysis.score < 0.5) {
-      return NextResponse.json({ message: "Failed to verify recaptcha" });
-    }
+    // if (response.riskAnalysis.score < 0.5) {
+    //   return NextResponse.json({ message: "Failed to verify recaptcha" });
+    // }
 
     const url = new URL(req.url);
     const postId = Number(url.pathname.split('/')[3]);
