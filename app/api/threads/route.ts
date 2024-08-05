@@ -9,7 +9,8 @@ export async function POST(req: Request, res: NextApiResponse) {
     const formData = await req.formData();
 
     const token = formData.get('token') as string;
-    const client = new RecaptchaEnterpriseServiceClient();
+    const keyFilename = Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS || '', 'base64').toString('ascii');
+    const client = new RecaptchaEnterpriseServiceClient({ keyFilename });
     const projectPath = client.projectPath('bran-1722634856780');
     const request = ({
       assessment: {
