@@ -3,13 +3,20 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/utility/prisma";
 import { uploadImageToS3 } from "@/utility/functions";
 import { RecaptchaEnterpriseServiceClient } from "@google-cloud/recaptcha-enterprise";
+import fs from "fs";
 
 export async function POST(req: Request, res: NextApiResponse) {
   try {
     const formData = await req.formData();
 
     const token = formData.get('token') as string;
-    const client = new RecaptchaEnterpriseServiceClient({ keyFilename: Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS || '', 'base64').toString('ascii') });
+    const credentials = Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS || '', 'base64').toString('ascii')
+
+    const tempFilePath = "/tmp/gcloud_creds.json"
+    fs.writeFileSync(tempFilePath, credentials)
+    
+    const client = new RecaptchaEnterpriseServiceClient({ keyFilename: tempFilePath });
+    
     const projectPath = client.projectPath('bran-1722634856780');
     const request = ({
       assessment: {
