@@ -2,8 +2,6 @@ import { NextApiResponse } from "next";
 import { NextResponse } from "next/server";
 import { prisma } from "@/utility/prisma";
 import { uploadImageToS3 } from "@/utility/functions";
-import { RecaptchaEnterpriseServiceClient } from "@google-cloud/recaptcha-enterprise";
-import fs from "fs";
 import axios from "axios";
 
 export async function POST(req: Request, res: NextApiResponse) {
@@ -12,12 +10,12 @@ export async function POST(req: Request, res: NextApiResponse) {
 
     const token = formData.get('token') as string;
 
-    const res = await axios.post(`https://recaptchaenterprise.googleapis.com/v1/projects/bran-1722634856780/assessments?key=${process.env.NEXT_PUBLIC_RECAPTCHA_KEY}`, 
+    const res = await axios.post(`https://recaptchaenterprise.googleapis.com/v1/projects/bran-1722634856780/assessments?key=${process.env.GOOGLE_RECAPTCHA_SECRET}`, 
       {
         event: {
-          token: token,
+          token,
           expectedAction: "USER_ACTION",
-          siteKey: "6Lf1-h0qAAAAACGCdIwjjJdMJA751Y53cugFR6mq",
+          siteKey: process.env.NEXT_PUBLIC_RECAPTCHA_KEY,
         }
       }, { 
       headers: {
@@ -25,34 +23,7 @@ export async function POST(req: Request, res: NextApiResponse) {
       }
     });
 
-    console.log(res.data);
-
-    if (res && res.data?.success && res.data?.score > 0.5) {
-      console.log('success');
-
-      // const client = new RecaptchaEnterpriseServiceClient({ credentials: credentials });
-      
-      // const projectPath = client.projectPath('bran-1722634856780');
-      // const request = ({
-      //   assessment: {
-      //     event: {
-      //       token: token,
-      //       expectedAction: "USER_ACTION",
-      //       siteKey: process.env.NEXT_PUBLIC_RECAPTCHA_KEY,
-      //     }
-      //   },
-      //   parent: projectPath
-      // })
-
-      // const [ response ] = await client.createAssessment(request);
-
-      // if (!response || !response.riskAnalysis || !response.riskAnalysis.score) {
-      //   return NextResponse.json({ message: "Failed to verify recaptcha" });
-      // }
-
-      // if (response.riskAnalysis.score < 0.5) {
-      //   return NextResponse.json({ message: "Failed to verify recaptcha" });
-      // }
+    if (res && res.data?.tokenProperties.valid && res.data?.riskAnalysis.score > 0.5) {
 
       const image = formData.get('file') as unknown as File;
 
