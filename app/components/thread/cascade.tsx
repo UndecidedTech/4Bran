@@ -7,6 +7,27 @@ import { useState } from "react";
 import Reply from "./reply";
 import ComposeReplyBox from "./compose-reply-box";
 
+function formatComment(comment: string) {
+  // Split the comment by newlines and special formatting rules
+  const parts = comment.split(/(>>\d+|>.+?$)/gm);
+  
+  return parts.map((part, index) => {
+    if (part.startsWith(">") && !part.startsWith(">>")) {
+      return (
+        <span key={index} className="text-[#789922]">
+          {part}
+        </span>
+      );
+    // Handle newlines
+    } else if (part === "\n") {
+      return <br key={index} />;
+    // Handle regular text
+    } else {
+      return part;
+    }
+  });
+}
+
 export default function Cascade() {
   const params = useParams();
   const [ratio, setRatio] = useState(1);
@@ -78,7 +99,7 @@ export default function Cascade() {
               <span className="px-1 hover:text-red-600 hover:cursor-pointer" onClick={() => handleReplyClick({ reply: thread.data.post })}>No.{thread.data.post.id}</span>
               {thread.data.post.directReplies && thread.data.post.directReplies.map((reply: number) => <a key={reply} href={`#${reply.toString()}`} className="px-0.5 underline text-[10px] text-slate-600 hover:text-red-600 hover:cursor-pointer">&gt;&gt;{reply}</a>)}
             </span>
-            <blockquote className="clear-right whitespace-pre-wrap mx-2 col-span-1 pt-2 pb-4 px-1 text-[12px]">{thread.data.post.comment}</blockquote>
+            <blockquote className="clear-right whitespace-pre-wrap mx-2 col-span-1 pt-2 pb-4 px-1 text-[12px]">{formatComment(thread.data.post.comment)}</blockquote>
             {thread.data.post.ThreadReplies.map((reply: any) => <Reply key={reply.id} allReplyIds={allReplyIds}  reply={reply}  handleReplyClick={handleReplyClick} />)}
           </div>
         </div>
