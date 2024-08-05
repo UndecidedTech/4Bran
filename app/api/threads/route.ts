@@ -21,7 +21,7 @@ export async function POST(req: Request, res: NextApiResponse) {
         }
       }, { 
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
       }
     });
 
