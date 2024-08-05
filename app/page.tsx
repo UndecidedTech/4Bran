@@ -17,10 +17,10 @@ export default function Home() {
         </h1>
         <GoogleCaptchaWrapper>
           <ComposePost />
-          <QueryClientProvider client={queryClient}>
-            <Catalog />
-          </QueryClientProvider>
         </GoogleCaptchaWrapper>
+        <QueryClientProvider client={queryClient}>
+          <Catalog />
+        </QueryClientProvider>
       </div>
     </main>
   );

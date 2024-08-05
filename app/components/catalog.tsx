@@ -18,9 +18,9 @@ export default function Catalog() {
     <>
       {isLoading && <p>Loading...</p>}
       <div className="w-full flex justify-center">
-        <div className="max-w-content flex flex-wrap justify-start gap-x-4 lg:gap-x-8 px-12 gap-y-4 lg:gap-y-8">
+        <div className="max-w-content flex flex-wrap justify-center gap-x-4 lg:gap-x-8 md:px-12 gap-y-4 lg:gap-y-8">
           {posts && posts.map((post: any) => (
-            <div className="max-w-[180px] max-h-[328px] flex flex-col items-center text-xs">
+            <div className="max-w-[130px] md:max-w-[180px] max-h-[328px] flex flex-col items-center text-xs">
               <Link
                 href={`/thread/${post.id}`}
               >
@@ -30,6 +30,7 @@ export default function Catalog() {
               <p className="max-w-[150px] text-center line-clamp-[10]"><span className="font-bold">{post.subject}</span>: {post.comment}</p>
             </div>
           ))}
+          {Array.from({ length: 13 }, (_, i) => <div key={i} className="w-full h-0 max-w-[130px] md:max-w-[180px] max-h-[328px]" />)}
         </div>
       </div>
     </>
