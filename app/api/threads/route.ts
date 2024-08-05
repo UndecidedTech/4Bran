@@ -10,12 +10,9 @@ export async function POST(req: Request, res: NextApiResponse) {
     const formData = await req.formData();
 
     const token = formData.get('token') as string;
-    const credentials = Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS || '', 'base64').toString('ascii')
+    const credentials = JSON.parse(Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS || '', 'base64').toString('ascii'))
 
-    const tempFilePath = "/tmp/gcloud_creds.json"
-    fs.writeFileSync(tempFilePath, credentials)
-    
-    const client = new RecaptchaEnterpriseServiceClient({ keyFilename: tempFilePath });
+    const client = new RecaptchaEnterpriseServiceClient({ credentials: credentials });
     
     const projectPath = client.projectPath('bran-1722634856780');
     const request = ({
