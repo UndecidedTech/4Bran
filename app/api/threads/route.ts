@@ -12,9 +12,14 @@ export async function POST(req: Request, res: NextApiResponse) {
 
     const token = formData.get('token') as string;
 
-    const url = `secret=${process.env.GOOGLE_RECAPTCHA_SECRET}&resposne=${token}`;
-
-    const res = await axios.post('https://www.google.com/recaptcha/api/siteverify', url, {
+    const res = await axios.post(`https://recaptchaenterprise.googleapis.com/v1/projects/bran-1722634856780/assessments?key=${process.env.NEXT_PUBLIC_RECAPTCHA_KEY}`, 
+      {
+        "event": {
+          "token": token,
+          "expectedAction": "USER_ACTION",
+          "siteKey": "6Lf1-h0qAAAAACGCdIwjjJdMJA751Y53cugFR6mq",
+        }
+      }, { 
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       }
